@@ -1,0 +1,8 @@
+node_modules/
+electron/node_modules/
+.dest/
+.settings/
+.project
+
+*~
+.htaccess

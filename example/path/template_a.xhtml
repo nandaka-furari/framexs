@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" prefix="og: http://ogp.me/ns# rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rss: http://purl.org/rss/1.0/"
+    lang="ja"
+    xmlns:framexs="urn:framexs">
+<head>
+<title> - Teamplate A</title>
+<script src="script_a.js" framexs:addpath="on"></script>
+<script src="dir1/script_b.js" framexs:addpath="on"></script>
+<script src="dir1/dir2/script_c.js" framexs:addpath="on"></script>
+<link rel="stylesheet" href="style_a.css" framexs:addpath="on"/>
+<link rel="stylesheet" href="dir1/style_b.css" framexs:addpath="on"/>
+<link rel="stylesheet" href="dir1/dir2/style_c.css" framexs:addpath="on"/>
+<style>
+#right {width:20%;float:right}
+#center {width:60%;float:right}
+#left {width:20%;float:right}
+</style>
+</head>
+<body>
+<header><h1><span framexs:title=""></span></h1></header>
+<div>
+<aside id="right">
+<ul>
+<li><a href="utc.xhtml" framexs:addpath="on">template_cを使う</a></li>
+<li><a href="dir1/uta.xhtml" framexs:addpath="on">template_aを使う</a></li>
+<li><a href="dir1/utb.xhtml" framexs:addpath="on">template_bを使う</a></li>
+<li><a href="dir1/utc.xhtml" framexs:addpath="on">template_cを使う</a></li>
+<li><a href="dir1/dir2/uta.xhtml" framexs:addpath="on">template_aを使う</a></li>
+</ul>
+</aside>
+<main id="center">
+<h2>テンプレートファイルのパスのテスト</h2>
+<div>
+<div><img src="image_a.svg" framexs:addpath="on"/><object type="image/svg+xml" data="image_a.svg" framexs:addpath="on"></object></div>
+<div><img src="dir1/image_b.svg" framexs:addpath="on"/><object type="image/svg+xml" data="dir1/image_b.svg" framexs:addpath="on"></object></div>
+<div><img src="dir1/dir2/image_c.svg" framexs:addpath="on"/><object type="image/svg+xml" data="dir1/dir2/image_c.svg" framexs:addpath="on"></object></div>
+<div><span id="display_a" class="display_a"></span></div>
+<div><span id="display_b" class="display_b"></span></div>
+<div><span id="display_c" class="display_c"></span></div>
+</div>
+</main>
+</div>
+</body>
+</html>

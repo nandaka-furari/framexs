@@ -1,0 +1,718 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="application/xml" href="framexs.xml"?>
+<?framexs?>
+<?framexs.def.js framexs.js?>
+<!--
+XSLTで実現するフレームワーク framexs
+-->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xh="http://www.w3.org/1999/xhtml" xmlns:framexs="urn:framexs" version="1.0">
+	<xsl:output encoding="UTF-8" media-type="text/html" method="html" doctype-system="about:legacy-compat"/>
+	<xsl:param name="framexs" select="boolean(/processing-instruction('framexs'))"/>
+
+
+	<!-- skelton_locが指定されればXHTMLテンプレート処理を行う -->
+	<xsl:param name="skelton_loc" select="/processing-instruction('framexs.skelton')"/>
+	<xsl:param name="framexs.base" select="/processing-instruction('framexs.base')"/>
+	<xsl:param name="framexs.addpath" select="/processing-instruction('framexs.addpath')"/>
+
+	<!-- デフォルト処理s -->
+	<xsl:param name="framexs.tab" select="/processing-instruction('framexs.def.tab')"/>
+	<xsl:param name="saxonce_loc" select="/processing-instruction('framexs.def.saxonce')"/>
+	<xsl:param name="css_loc" select="/processing-instruction('framexs.def.css')"/>
+	<xsl:param name="js_loc" select="/processing-instruction('framexs.def.js')"/>
+	<xsl:param name="framexsjs_loc" select="/processing-instruction('framexs.def.framexsjs')"/>
+	<xsl:param name="desc" select="$framexs.tab and contains($framexs.tab,'desc')"/>
+	<xsl:param name="copy" select="$framexs.tab and contains($framexs.tab,'copy')"/>
+
+	<xsl:variable name="root" select="/"></xsl:variable>
+	<xsl:variable name="content" select="$root"></xsl:variable>
+	<xsl:variable name="rootns" select="namespace-uri(*[1])"/>
+	<xsl:variable name="xhns" select="'http://www.w3.org/1999/xhtml'"/>
+	<xsl:variable name="fmxns" select="'urn:framexs'"/>
+	<xsl:variable name="empty" select="''"/>
+	<xsl:variable name="version" select="'1.1.4'"/>
+
+	
+	<!-- テンプレート兼解説書 このXSLに関する説明 -->
+	<xsl:template name="desc">
+		<h2>framexsフレームワーク <xsl:value-of select="$version"/></h2>
+		<p>framexsはXSLTプロセッサに処理を行わせる記述のXSLファイルです。どのXMLでもHTML5に変換する機能がありますが、特にXHTMLのコンテンツとテンプレートによって、効率的に柔軟にHTML5に変換する目的で書かれたフレームワークです。</p>
+		<section>
+			<h2>framexsの原理</h2>
+			<p>処理対象のソースとなるXMLのこのファイルをスタイルシートとして読み込ませ、さらにスタイルシートパラメータの指定かXMLのプロローグ部においてframexs特有の記述を追加することによってさまざまな処理を行わせます。<br/>
+			framexsはXHTMLのテンプレートとコンテンツを使うモードと一般的なXMLを処理するモードの2つのモードがあります。
+			</p>
+			<p>ブラウザで使う場合はXMLのプロローグ部でxml-stylesheet処理命令によって指定してください。<br/>
+			xml-stylesheet処理命令に関しては詳しくXMLやはXSLTやUserAgentの仕様を確認してください。<br/>
+			今このファイルをブラウザで観ているならば処理形態はXMLモードで処理しています。このファイルをXSLにしてこのファイル自身をソースXMLとしてXSLT処理を行わせてHTML5を出力しています。</p>
+			<h4>XHTMLモード</h4>
+			<p>名前空間が<xsl:value-of select="$xhns"/>のXHTMLでframexs.skeltonコマンドがある場合です。テンプレートとコンテンツは名前空間が<xsl:value-of select="$xhns"/>のXHTMLを使います。テンプレートにはframexsの名前空間<xsl:value-of select="$fmxns"/>も必要です。<br/>
+			framexs.skeltonが#のときはデフォルトのテンプレート的な内部での処理を行います。</p>
+			<h4>XMLモード</h4>
+			<p>名前空間がXHTMLのものではないか、あるいは、XHTMLであってもframexs.skeltonコマンドが無ければ一般的なXMLを処理する動作を行います。</p>
+		</section>
+		<section>
+			<h4>framexsコマンド</h4>
+			<p>XMLのプロローグ部において処理命令のうち名前の先頭にframexsが付くものをframexsコマンドと呼ぶものとします。</p>
+			<p>先頭にframexs.defがあるものはframexs.skeltonが#の時にあるいは一般的なXMLの時に有効です。</p>
+			<table summary="1行目はコマンド名。2行目は解説。コンテンツで使う。">
+				<caption>framexsコマンド一覧</caption>
+				<tr><td>framexs.skelton</td><td>テンプレートのパスを指定します。"#"にすると内蔵の処理機構を適用します。</td></tr>
+				<tr><td>framexs.base</td><td>テンプレートにbase要素がある場合、この値で上書きします。</td></tr>
+				<tr><td>framexs.addpath</td><td>テンプレートのframexs:addpathがある要素のhref、src、data属性の先頭にこの値を付け足します。</td></tr>
+				<tr id="command_fetch"><td>framexs.fetch</td><td>XMLを指定します。名前と呼び出したいXMLのパスを空白で区切ります。framexs:copyで呼び出します。</td></tr>
+				<tr class="deprecated"><td>framexs.pull</td><td>指定したXHTMLの中のその名前の値を持つid属性を持つ要素を指定します。名前と呼び出したいXHTMLのパスを空白で区切ります。<a href="template_attr_pull">framexs:pull属性</a>で呼び出します。</td></tr>
+				<tr id="command_id"><td>framexs.id</td><td>指定したXHTMLの中のその名前の値を持つid属性を持つ要素を指定します。名前と呼び出したいXHTMLのパスを空白で区切ります。<a href="#template_attr_id-d">framexs:id-d属性</a>か<a href="#template_attr_id-sd">framexs:id-sd属性</a>で呼び出します。</td></tr>
+				<tr><td>framexs.element</td><td>指定したXHTMLのbody要素の子の中のその名前の要素を指定します。名前と呼び出したいXHTMLのパスを空白で区切ります。<a href="template_attr_element">framexs:element属性</a>で呼び出します。</td></tr>
+				<tr><td>framexs.def.tab</td><td>タブ表示をします。</td></tr>
+				<tr><td>framexs.def.js</td><td>指定したJavaScriptを読み込みます。</td></tr>
+				<tr><td>framexs.def.framexsjs</td><td>指定したJavaScriptをframexsアプリのJSにします。</td></tr>
+				<tr><td>framexs.def.saxonce</td><td>framexsアプリで使うSaxonCEを呼び出すパスを指定します。</td></tr>
+			</table>
+			<h4>framexs属性</h4>
+			<p>テンプレートではframexsの名前空間(<xsl:value-of select="$fmxns"/>)を持つ属性によってさまざまな機能が使えます。</p>
+			<table summary="">
+				<caption>テンプレートで使うframexs属性</caption>
+				<tr id="template_attr_pull" class="deprecated"><td>pull</td><td>廃止予定。コンテンツXHTMLかまたは<a class="framexs.command.name">framexs.pull</a>で定義したXHTMLファイルの中でidが値と一致する要素の子孫をコピーします。</td></tr>
+				<tr id="template_attr_pull-d" class="deprecated"><td>pull-d</td><td>コンテンツXHTMLかまたは<a class="framexs.command.name">framexs.pull</a>で定義したXHTMLファイルの中でidが値と一致する要素の子孫をコピーします。</td></tr>
+				<tr id="template_attr_pull-sd" class="deprecated"><td>pull-sd</td><td>コンテンツXHTMLかまたはframexs.pullで定義したXHTMLファイルの中でidが値と一致する要素とその子孫をコピーします。</td></tr>
+				<tr id="template_attr_id-d"><td>id-d</td><td>コンテンツXHTMLかまたは<a href="#command_id">framexs.id</a>で定義したXHTMLファイルの中でidが値と一致する要素の子孫をコピーします。</td></tr>
+				<tr id="template_attr_id-sd"><td>id-sd</td><td>コンテンツXHTMLかまたは<a href="#command_id">framexs.id</a>で定義したXHTMLファイルの中でidが値と一致する要素とその子孫をコピーします。</td></tr>
+				<tr id="template_attr_elelment"><td>elment</td><td>廃止予定。コンテンツXHTMLかまたはframexs.elementで定義したXHTMLファイルの中でidが値と一致する要素の子孫をコピーします。</td></tr>
+				<tr id="template_attr_elelment-d"><td>elment-d</td><td>コンテンツXHTMLかまたはframexs.elementで定義したXHTMLファイルの中でidが値と一致する要素の子孫をコピーします。</td></tr>
+				<tr id="template_attr_elelment-sd"><td>elment-sd</td><td>コンテンツXHTMLかまたはframexs.elementで定義したXHTMLファイルの中でidが値と一致する要素とその子孫をコピーします。</td></tr>
+				<tr><td>fetch-d</td><td>framexs.fetchで指定したXMLのルートの子孫ノードをコピーします。</td></tr>
+				<tr><td>fetch-sd</td><td>framexs.fetchで指定したXMLをコピーします。</td></tr>
+				<tr><td>title</td><td>title要素のテキストに置き換えます。</td></tr>
+				<tr><td>meta-name</td><td>コンテンツのmeta要素の中でnameが一致する要素のcontent属性値に置き換えます。</td></tr>
+				<tr><td>meta-property</td><td>コンテンツのmeta要素の中でpropertyが一致するcontent属性値に置き換えます。</td></tr>
+				<tr><td>addpath</td><td>src、href、data属性にコンテンツのframexs.addpathで指定された値を先頭に加えます</td></tr>
+				<tr><td>print</td><td>noを指定するとその要素を含めて結果に出力しません。</td></tr>
+				<tr><td>load</td><td>meta要素のみで使えます。読み込む要素名を指定するとコンテンツのhead直下の要素を指定します。script、style、linkが指定可能です。</td></tr>
+			</table>
+		</section>
+	</xsl:template>
+	
+	<xsl:template match="/" name="test">
+		<!-- 基本的な処理分けを行う。XHTMLか一般XMLか -->
+		<xsl:choose>
+			<xsl:when test="$skelton_loc and namespace-uri(*[1]) = $xhns">
+				<xsl:message>content</xsl:message>
+				<xsl:apply-templates select="document($skelton_loc)/xh:html"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:message>一般XML</xsl:message>
+				<xsl:call-template name="default_template"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<!--  -->
+	<xsl:template match="xh:*" mode="content">
+		<xsl:element name="{name()}">
+			<xsl:apply-templates mode="content" select="@*"></xsl:apply-templates>
+			<xsl:apply-templates mode="content" select="node()"></xsl:apply-templates>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="@* | node()" mode="content">
+		<xsl:copy>
+			<xsl:apply-templates select="@*" mode="content"/>
+			<xsl:apply-templates mode="content"/>
+		</xsl:copy>
+	</xsl:template>
+	
+	<xsl:template match="xh:*" mode="search-id">
+		<xsl:param name="targetid"/>
+		<xsl:param name="self" select="false()"/>
+		<xsl:choose>
+			<xsl:when test="@id = $targetid">
+				<xsl:choose>
+					<xsl:when test="$self">
+						<xsl:apply-templates mode="content" select="."></xsl:apply-templates>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates mode="content" select="node()"></xsl:apply-templates>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates select="xh:*" mode="search-id">
+					<xsl:with-param name="targetid" select="$targetid"/>
+					<xsl:with-param name="self" select="$self"/>
+				</xsl:apply-templates>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template name="attr_id">
+		<xsl:param name="content"/>
+		<xsl:param name="id"/>
+		<xsl:param name="range"/>
+		<xsl:apply-templates mode="search-id" select="$content/xh:html">
+			<xsl:with-param name="targetid" select="$id"/>
+			<xsl:with-param name="self" select="$range = 'sd'"/>
+		</xsl:apply-templates>
+		<xsl:for-each select="$root/processing-instruction('framexs.id')">
+			<xsl:variable name="name" select="substring-before(.,' ')"/>
+			<xsl:if test="$id = $name">
+				<xsl:apply-templates mode="search-id" select="document(substring-after(.,' '),$root)/xh:*">
+					<xsl:with-param name="targetid" select="$id"/>
+					<xsl:with-param name="self" select="$range = 'sd'"/>
+				</xsl:apply-templates>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	<xsl:template match="xh:*[@framexs:id-d]">
+		<xsl:param name="content" select="$content"/>
+		<xsl:message>id-d</xsl:message>
+		<xsl:call-template name="attr_id">
+			<xsl:with-param name="content" select="$content"/>
+			<xsl:with-param name="id" select="@framexs:id-d"/>
+			<xsl:with-param name="range" select="'d'"/>
+		</xsl:call-template>
+	</xsl:template>
+	<xsl:template match="xh:*[@framexs:id-sd]">
+		<xsl:param name="content" select="$content"/>
+		<xsl:call-template name="attr_id">
+			<xsl:with-param name="content" select="$content"/>
+			<xsl:with-param name="id" select="@framexs:id-sd"/>
+			<xsl:with-param name="range" select="'sd'"/>
+		</xsl:call-template>
+	</xsl:template>
+	
+	<!-- framexs:pullを処理 -->
+	<xsl:template match="xh:*[@framexs:pull-d]">
+		<xsl:variable name="pull" select="@framexs:pull-d"/>
+		<xsl:apply-templates mode="search-id" select="$content/xh:html">
+			<xsl:with-param name="targetid" select="$pull"></xsl:with-param>
+		</xsl:apply-templates>
+		<xsl:for-each select="$root/processing-instruction('framexs.pull')">
+			<xsl:variable name="name" select="substring-before(.,' ')"/>
+			<xsl:if test="$pull = $name">
+				<xsl:apply-templates mode="search-id" select="document(substring-after(.,' '),$root)/xh:*">
+					<xsl:with-param name="targetid" select="$pull"></xsl:with-param>
+				</xsl:apply-templates>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+
+	<!-- framexs:pullを処理 -->
+	<xsl:template match="xh:*[@framexs:pull-sd]">
+		<xsl:variable name="pull" select="@framexs:pull-sd"/>
+		<xsl:apply-templates mode="search-id" select="$content/xh:html">
+			<xsl:with-param name="targetid" select="$pull"/>
+			<xsl:with-param name="self" select="true()"/>
+		</xsl:apply-templates>
+		<xsl:for-each select="$root/processing-instruction('framexs.pull')">
+			<xsl:variable name="name" select="substring-before(.,' ')"/>
+			<xsl:if test="$pull = $name">
+				<xsl:apply-templates mode="search-id" select="document(substring-after(.,' '),$root)/xh:*">
+					<xsl:with-param name="targetid" select="$pull"/>
+					<xsl:with-param name="self" select="true()"/>
+				</xsl:apply-templates>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	<!-- framexs:pullを処理 -->
+	<xsl:template match="xh:*[@framexs:pull]">
+		<xsl:variable name="pull" select="@framexs:pull"/>
+		<xsl:apply-templates mode="search-id" select="$content/xh:html">
+			<xsl:with-param name="targetid" select="$pull"></xsl:with-param>
+		</xsl:apply-templates>
+		<xsl:for-each select="$root/processing-instruction('framexs.pull')">
+			<xsl:variable name="name" select="substring-before(.,' ')"/>
+			<xsl:if test="$pull = $name">
+				<xsl:apply-templates mode="search-id" select="document(substring-after(.,' '),$root)/xh:*">
+					<xsl:with-param name="targetid" select="$pull"></xsl:with-param>
+				</xsl:apply-templates>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	<!--<xsl:template match="xh:*[@framexs:for]">
+        <xsl:variable name="for" select="@framexs:for"></xsl:variable>
+    </xsl:template>-->
+    <xsl:template match="xh:*[@framexs:ifexist]">
+        <xsl:variable name="ifexist" select="@framexs:ifexist"/>
+        <xsl:apply-templates></xsl:apply-templates>
+    </xsl:template>
+    
+    <xsl:template name="element">
+    	<xsl:param name="self" select="false()"/>
+    	<xsl:param name="element"/>
+    	<xsl:for-each select="$content/xh:html/xh:body/xh:*">
+			<xsl:if test="name() = $element">
+				<xsl:choose>
+					<xsl:when test="$self">
+						<xsl:apply-templates mode="content" select="."/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates mode="content" select="node()"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+		</xsl:for-each>
+		<xsl:for-each select="$root/processing-instruction('framexs.element')">
+			<xsl:variable name="name" select="substring-before(., ' ')"/>
+			<xsl:if test="$element = $name">
+				<xsl:for-each select="document(substring-after(.,' '),$root)/xh:html/xh:body/xh:*">
+					<xsl:if test="name() = $element">
+						<xsl:choose>
+							<xsl:when test="$self">
+								<xsl:apply-templates mode="content" select="."/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:apply-templates mode="content" select="node()"/>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:if>
+				</xsl:for-each>
+			</xsl:if>
+		</xsl:for-each>
+    </xsl:template>
+    <xsl:template match="xh:*[@framexs:element-sd]">
+		<xsl:call-template name="element">
+			<xsl:with-param name="element" select="@framexs:element-sd"/>
+			<xsl:with-param name="self" select="true()"/>
+		</xsl:call-template>
+	</xsl:template>
+	<xsl:template match="xh:*[@framexs:element-d]">
+		<xsl:call-template name="element">
+			<xsl:with-param name="element" select="@framexs:element-d"/>
+			<xsl:with-param name="self" select="false()"/>
+		</xsl:call-template>
+	</xsl:template>
+	<xsl:template match="xh:*[@framexs:element]">
+		<xsl:call-template name="element">
+			<xsl:with-param name="element" select="@framexs:element"/>
+			<xsl:with-param name="self" select="false()"/>
+		</xsl:call-template>
+	</xsl:template>
+
+	<xsl:template match="xh:*[@framexs:fetch-sd]">
+		<xsl:variable name="name" select="@framexs:fetch-sd"/>
+		<xsl:for-each select="$root/processing-instruction('framexs.fetch')">
+			<xsl:if test="$name = substring-before(.,' ')">
+				<xsl:apply-templates mode="content" select="document(substring-after(.,' '), $root)/*"/>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	<xsl:template match="xh:*[@framexs:fetch-d]">
+		<xsl:variable name="name" select="@framexs:fetch-d"/>
+		<xsl:for-each select="$root/processing-instruction('framexs.fetch')">
+			<xsl:if test="$name = substring-before(.,' ')">
+				<xsl:apply-templates mode="content" select="document(substring-after(.,' '), $root)/*"/>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	<xsl:template match="xh:*[@framexs:copy]">
+		<xsl:variable name="name" select="@framexs:copy"/>
+		<xsl:for-each select="$root/processing-instruction('framexs.copy')">
+			<xsl:if test="$name = substring-before(.,' ')">
+				<xsl:apply-templates mode="content" select="document(substring-after(.,' '), $root)/*"/>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<!--  -->
+	
+	<xsl:template match="id('profile')">
+		<xsl:apply-templates></xsl:apply-templates>
+	</xsl:template>
+	
+	<xsl:template match="*">
+		<xsl:copy-of select="."/>
+	</xsl:template>
+	
+	<xsl:template match="xh:*[@framexs:title]">
+		<xsl:value-of select="$content/xh:html/xh:head/xh:title"/>
+	</xsl:template>
+	
+	<xsl:template match="xh:*[@framexs:meta-name]">
+		<xsl:variable name="name" select="@framexs:meta-name"/>
+		<xsl:for-each select="$content/xh:html/xh:head/xh:meta">
+			<xsl:if test="@name = $name">
+				<xsl:value-of select="@content"/>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template match="xh:*[@framexs:meta-property]">
+		<xsl:variable name="property" select="@framexs:meta-property"/>
+		<xsl:for-each select="$content/xh:html/xh:head/xh:meta">
+			<xsl:if test="@property = $property">
+				<xsl:value-of select="@content"/>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>	
+	
+	<!-- コンテンツにframexs.baseがあるならbaseのhrefを上書きする -->
+	<xsl:template match="xh:base[@framexs:base='on']">
+		<xsl:element name="base">
+			<xsl:for-each select="@*">
+				<xsl:copy-of select="."/>
+				<xsl:if test="name() = 'href' and $framexs.base">
+					<xsl:attribute name="href"><xsl:value-of select="$framexs.base"/></xsl:attribute>
+				</xsl:if>
+			</xsl:for-each>
+		</xsl:element>
+	</xsl:template>
+	<!-- 何も出力しない -->
+	<xsl:template match="xh:*[@framexs:print='no']"/>
+	
+	<xsl:template match="xh:title">
+		<xsl:element name="title">
+			<xsl:value-of select="concat($root/xh:html/xh:head/xh:title/text(),.)"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template name="metatemplate">
+		<xsl:param name="target"/>
+		<xsl:param name="base"/>
+		<xsl:element name="meta">
+			<xsl:for-each select="@*">
+				<xsl:choose>
+					<xsl:when test="name() = 'content'">
+						<xsl:attribute name="{name()}"><xsl:value-of select="$target/@content"/><xsl:value-of select="$base/@content"/></xsl:attribute>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:for-each>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="xh:meta[@name]">
+		<xsl:variable name="base" select="."></xsl:variable>
+		<xsl:for-each select="$root/xh:html/xh:head/xh:meta[@name]">
+			<xsl:variable name="target" select="."></xsl:variable>
+			<xsl:if test="$base/@name=$target/@name">
+				<xsl:call-template name="metatemplate">
+					<xsl:with-param name="base" select="$base"/>
+					<xsl:with-param name="target" select="$target"/>
+				</xsl:call-template>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template match="xh:meta[@property]">
+		<xsl:variable name="base" select="."></xsl:variable>
+		<xsl:for-each select="$root/xh:html/xh:head/xh:meta[@property]">
+			<xsl:variable name="target" select="."></xsl:variable>
+			<xsl:if test="$base/@property=$target/@property">
+				<xsl:call-template name="metatemplate">
+					<xsl:with-param name="base" select="$base"/>
+					<xsl:with-param name="target" select="$target"/>
+				</xsl:call-template>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template match="xh:*[@framexs:load]">
+		<xsl:for-each select="$root/xh:html/xh:head/xh:*">
+			<xsl:if test="name() = @framexs:load">
+				<xsl:copy-of select="."/>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template name="addpath">
+		<xsl:param name="attr"></xsl:param>
+		<xsl:param name="addpath"></xsl:param>
+	</xsl:template>
+	
+	<xsl:template match="xh:*">
+		<!-- addpathがonならパスの処理を行う -->
+		<xsl:variable name="addpath" select="@framexs:addpath"></xsl:variable>
+		<xsl:element name="{name()}">
+			<xsl:for-each select="@*">
+				<xsl:choose>
+					<xsl:when test="name() = 'src' or name() = 'href' or name() = 'data'">
+						<xsl:choose>
+							<xsl:when test="$addpath = 'on'">
+								<xsl:attribute name="{name()}"><xsl:value-of select="$framexs.addpath"/><xsl:value-of select="."/></xsl:attribute>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:if test="namespace-uri() != 'urn:framexs'">
+							<xsl:copy-of select="."/>
+						</xsl:if>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:for-each>
+			<xsl:apply-templates/>
+		</xsl:element>
+	</xsl:template>
+		
+	<xsl:template match="*" mode="xmltohtml">
+		<div class="element {name()}">
+			<p>
+				<span class="elemicon fa fa-folder-o"> </span>
+				<span class="elemname">
+					<xsl:value-of select="name()"></xsl:value-of>
+				</span>
+				<xsl:for-each select="@*">
+					<span class="attricon fa fa-cogs"> </span>
+					<span class="attr">
+						<span class="name">
+							<xsl:value-of select="name()"/>
+						</span>
+						<xsl:text>=</xsl:text>
+						<span class="value">
+							<xsl:value-of select="."/>
+						</span>
+					</span>
+					<xsl:text>&#160;</xsl:text>
+				</xsl:for-each>
+			</p>
+			<xsl:apply-templates mode="xmltohtml"/>
+		</div>
+	</xsl:template>
+	<!--framexs:attr-となっている場合の処理-->
+    <xsl:template match="xh:*[@framexs:* and starts-with(local-name(@framexs:*),'attr-')]">
+    	<xsl:variable name="attrname" select="substring-after(local-name(@framexs:*),'attr-')"></xsl:variable>
+    	<xsl:value-of select="$attrname"/>
+    	<xsl:variable name="elename" select="name()"></xsl:variable>
+    	<xsl:element name="{$elename}">
+			<xsl:for-each select="@*">
+				<xsl:if test="name() = $attrname">
+					<xsl:attribute name="{$attrname}"><xsl:value-of select="'attr'"/></xsl:attribute>
+				</xsl:if>
+			</xsl:for-each>
+    	</xsl:element>
+    </xsl:template>
+	<!--  -->
+
+	<xsl:template name="framexs-panel" xmlns:v-on="urn:vue:v-on">
+		<xsl:comment>Vue.js</xsl:comment>
+		<div id="framexs-panel">
+			<dl>
+				<dt>version</dt>
+				<dd>{{version}}</dd>
+				<dt><label>source</label></dt>
+				<dd>
+					<p><input v-model="sourceLocation" placeholder="edit me"></input></p>
+					<p><button id="framexs-for:basedoc" class="btn btn-default" v-on:click="load">load</button></p>
+				</dd>
+			</dl>
+		</div>
+	</xsl:template>
+
+	<xsl:template name="default_template">
+		<xsl:param name="default" select="false()"></xsl:param>
+		<html prefix="og: http://ogp.me/ns#" lang="ja">
+			<head>
+				<meta charset="UTF-8"/>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
+				
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.1/vue.js"></script>
+				
+				<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+				<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+				
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/URI.js/1.18.4/URI.js"></script>
+				
+				<link async="async" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"/>
+				
+				<script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.6/d3.min.js"></script>
+				
+				<script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.6.1/MathJax.js"></script>
+				
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.2.5/mocha.min.js"></script>
+				
+				<xsl:choose>
+					<xsl:when test="$framexsjs_loc">
+						<script>
+							<xsl:attribute name="async">async</xsl:attribute>
+							<xsl:attribute name="src"><xsl:value-of select="$framexsjs_loc"/></xsl:attribute>
+							<xsl:comment></xsl:comment>
+						</script>
+					</xsl:when>
+					<xsl:otherwise>
+						<script async="async" src="http://www.bbwtest.info/~nandaka_furari/framexs/framexs.js"></script>
+					</xsl:otherwise>
+				</xsl:choose>
+				
+				<style>
+#framexs-name {color: gray; text-shadow: 1px 1px blue;font-family: 'ヒラギノ角ゴ Pro W3'; transition: all 300ms 0s ease}
+#framexs-name:hover {color: black;box-shadow: 3px 3px gray;text-shadow: 3px 3px 1px 1px azure;transition: all 600ms 0s ease}
+#logo {vertical-align: top}
+#framexs-name #test-path,#black-circle,#blue-rect {transition: all 900ms 0s ease}
+main p {box-shadow:1px 1px 1px 1px silver;margin: .5em;padding:.5em}
+section {}
+header {border-bottom:double 5px silver;margin: 10px}
+footer {border-top:double 5px silver;margin: 10px; padding: 10px 0}
+footer .col {border-style: solid; border-color: aqua; border-width: 1px 0 0 1px; box-shadow: 1px 1px aquq; display: table-cell}
+.elemicon {margin-right: .5em}
+.elemname {}
+.element {border: solid 1px gray;}
+.element .element:hover, article .element:hover {box-shadow: 3px 3px gray}
+.element .element,article .element  {border-style: solid; border-color: blue; border-width: 1px 0 0 1px; margin: 10px 0 10px 10px; padding:10px}
+.attricon {margin-right: .5em; margin-left:1em}
+.attr .name {color: #E8351E}
+.attr .value {color: #1E6BE6}
+.panel-heading {margin:0}
+#qunit-panel {width:800px;float:right; display:none}
+.wide {width: 200%}
+td,th {border: solid 1px gray;}
+.deprecated {background-color:red}
+				</style>
+				<xsl:for-each select="/processing-instruction('css-location')">
+					<link rel="stylesheet" href="{.}"/>
+				</xsl:for-each>
+				
+				<xsl:for-each select="/processing-instruction('js-location')">
+					<script src="{.}">
+						<xsl:comment/>
+					</script>
+				</xsl:for-each>
+				<xsl:if test="$default">
+					<xsl:apply-templates select="$root/xh:html/xh:head/xh:script"/>
+					<xsl:apply-templates select="$root/xh:html/xh:head/xh:link"/>
+					<xsl:apply-templates select="$root/xh:html/xh:head/xh:style"/>
+				</xsl:if>
+				<title>
+					<xsl:value-of select="namespace-uri(*[1])"></xsl:value-of><xsl:value-of select="$skelton_loc"/>
+				</title>
+			</head>
+			<body class="container">
+				<header id="header-panel" class="row">
+					<div class="col-md-4">
+						<h1 id="framexs-name">
+							<svg id="logo" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" stroke="black" fill="rgb(124,150,236)" style="border: solid 1px black">
+								<circle id="black-circle" x="5" y="5" r="8" stroke="rgb(0,0,0)" fill="white"/>
+								<rect id="blue-rect" x="13" y="13" width="30" height="15" stroke="rgb(0,0,255)" fill="white" />
+								<path id="test-path" x="3" y="3" stroke="green" stroke-witdh="30" d="M 0,0 L 40,40 L 20,50 z"/>
+							</svg>
+							frame<span class="first-letter">x</span>s
+						</h1>
+					</div>
+					<div class="col-md-8">
+						<xsl:if test="default">
+							<xsl:apply-templates mode="search-id" select="$content/xh:*">
+								<xsl:with-param name="targetid" select="'framexs.head'"></xsl:with-param>
+							</xsl:apply-templates>
+						</xsl:if>
+					</div>
+				</header>
+				<div class="row" id="wrapper">
+					<main class="col-md-8" id="main-panel">
+						<xsl:if test="$default">
+							<xsl:apply-templates mode="search-id" select="$content/xh:*">
+								<xsl:with-param name="targetid" select="'framexs.main'"></xsl:with-param>
+							</xsl:apply-templates>
+						</xsl:if>
+						<xsl:choose>
+							<xsl:when test="$framexs">
+								<xsl:call-template name="desc"/>
+							</xsl:when>
+							<xsl:when test="$framexs.tab">
+								<ul class="nav nav-tabs">
+									<xsl:if test="$desc">
+										<li class="nav-item">
+											<a href="#main-panel" class="nav-link" data-toggle="tab">初めの画面</a>
+										</li>
+									</xsl:if>
+									<xsl:if test="$skelton_loc = '#'">
+										<li class="nav-item">
+											<a href="#copy" class="nav-link" data-toggle="main">元XML</a>
+										</li>
+									</xsl:if>
+									<xsl:if test="$copy">
+										<li class="nav-item">
+											<a href="#copy" class="nav-link" data-toggle="tab">元XML</a>
+										</li>
+									</xsl:if>
+								</ul>
+								<div class="tab-content">
+									<xsl:if test="$desc">
+										<xsl:call-template name="desc"/>
+									</xsl:if>
+									<xsl:if test="$skelton_loc = '#'">
+										<div id="main">
+											<xsl:copy-of select="/xh:html/xh:body/xh:main"/>
+										</div>
+									</xsl:if>
+									<xsl:if test="$copy">
+										<div id="copy" class="tab-pane">
+											<xsl:copy-of select="/*"/>
+										</div>
+									</xsl:if>
+								</div>
+							</xsl:when>
+							<xsl:when test="$skelton_loc = '#'">
+								<xsl:copy-of select="$root/xh:html/xh:body/xh:main/*"/>
+							</xsl:when>
+							<xsl:otherwise>
+								
+							</xsl:otherwise>
+						</xsl:choose>
+					</main>
+					<aside class="col-md-4" id="controll-panel">
+						<p>傍コンテンツ</p>
+						<xsl:call-template name="framexs-panel"/>
+						<h3>個別テンプレ</h3>
+						<div>
+							<xsl:apply-templates select="/xh:html/xh:body/xh:aside"></xsl:apply-templates>
+						</div>
+						<div>
+						<dl>
+						<dt>xsl:version</dt><dd><xsl:value-of select="system-property('xsl:version')"/></dd>
+						<dt>xsl:vendor</dt><dd><xsl:value-of select="system-property('xsl:vendor')"/></dd>
+						<dt>xsl:vendor-url</dt><dd><xsl:value-of select="system-property('xsl:vendor-url')"/></dd>
+						</dl></div>
+						<p><object data="http://www.bbwtest.info/~nandaka_furari/files/html/framexs-analytics.html" type="text/html" width="160" height="90"></object></p>
+					</aside>
+				</div>
+				<footer  id="footer-panel" class="row">
+					<div class="col-md-4">
+						<div class="panel panel-default">
+							<div class="panel-heading">framexs</div>
+							<ul class="panel-body list-group">
+								<li class="list-group-item"><a href="http://www.bbwtest.info/~nandaka_furari/framexs/index.xhtml">web site</a></li>
+								<li class="list-group-item"><a href="http://www.bbwtest.info/~nandaka_furari/framexs/framexs.xml">仕様</a></li>
+								<li class="list-group-item"><a href="https://github.com/nandaka-furari/framexs">GitHub</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<address class="panel panel-default">
+							<p class="panel-heading">ナンダカフラリ</p>
+							<ul class="panel-body list-group">
+								<li class="list-group-item">
+									<a href="https://twitter.com/nandaka_furari">twitter</a>
+								</li>
+								<li class="list-group-item">
+									<a href="https://github.com/nandaka-furari">ぎっとはぶ</a>
+								</li>
+								<li class="list-group-item">
+									<a href="http://www.bbwtest.info/~nandaka_furari/">website</a>
+								</li>
+							</ul>
+						</address>
+					</div>
+					<div class="col-md-4">
+						<div class="panel panel-default">
+							<p class="panel-heading">XSLT</p>
+							<ul class="panel-body list-group">
+								<li class="list-group-item">
+									<a href="https://www.w3.org/TR/xslt">XSLT 1.0</a>
+								</li>
+								<li class="list-group-item">
+									<a href="https://www.w3.org/TR/xslt20/">XSLT 2.0</a>
+								</li>
+								<li class="list-group-item">
+									<a href="https://www.w3.org/TR/xslt-30/">XSLT 3.0</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</footer>
+			</body>
+		</html>
+	</xsl:template>
+</xsl:stylesheet>

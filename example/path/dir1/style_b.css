@@ -1,0 +1,3 @@
+.display_b:before {
+	content: "style_b.cssが読み込まれました。"
+}
