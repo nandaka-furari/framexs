@@ -5,8 +5,8 @@ XHTMLフレームワーク：framexs
 framexsは主にブラウザーからウェブサイトにアクセスして(X)HTMLを読む場合を想定し、XHTMLのコンテンツとテンプレートから柔軟に効率的にHTMLを作りそれを読ませる目的のフレームワークです。XSL(XSLT 1.0)で書かれていてXSLTプロセッサーに処理を行わせます。一般的なXMLをHTMLに変換する機能もあります。
 最低限の仕様の解説と原理はframexsそのものに書かれています。
 
-http://www.bbwtest.info/~nandaka_furari/framexs/framexs.xml
-http://www.bbwtest.info/~nandaka_furari/framexs/index.xhtml
+https://nandaka-furari.github.io/framexs/framexs.xml
+https://nandaka-furari.github.io/framexs/index.xhtml
 
 ### こんにちわ世界！
 XHTMLについて実際のコード見ていきます。まずはコンテンツデータを見てみましょう。
