@@ -17,7 +17,6 @@ XSLTで実現するフレームワーク framexs
 
 	<!-- デフォルト処理s -->
 	<xsl:param name="framexs.tab" select="/processing-instruction('framexs.def.tab')"/>
-	<xsl:param name="saxonce_loc" select="/processing-instruction('framexs.def.saxonce')"/>
 	<xsl:param name="css_loc" select="/processing-instruction('framexs.def.css')"/>
 	<xsl:param name="js_loc" select="/processing-instruction('framexs.def.js')"/>
 	<xsl:param name="framexsjs_loc" select="/processing-instruction('framexs.def.framexsjs')"/>
@@ -30,7 +29,7 @@ XSLTで実現するフレームワーク framexs
 	<xsl:variable name="xhns" select="'http://www.w3.org/1999/xhtml'"/>
 	<xsl:variable name="fmxns" select="'urn:framexs'"/>
 	<xsl:variable name="empty" select="''"/>
-	<xsl:variable name="version" select="'1.1.4'"/>
+	<xsl:variable name="version" select="'1.2.0'"/>
 
 	
 	<!-- テンプレート兼解説書 このXSLに関する説明 -->
@@ -61,29 +60,24 @@ XSLTで実現するフレームワーク framexs
 				<tr><td>framexs.base</td><td>テンプレートにbase要素がある場合、この値で上書きします。</td></tr>
 				<tr><td>framexs.addpath</td><td>テンプレートのframexs:addpathがある要素のhref、src、data属性の先頭にこの値を付け足します。</td></tr>
 				<tr id="command_fetch"><td>framexs.fetch</td><td>XMLを指定します。名前と呼び出したいXMLのパスを空白で区切ります。framexs:copyで呼び出します。</td></tr>
-				<tr class="deprecated"><td>framexs.pull</td><td>指定したXHTMLの中のその名前の値を持つid属性を持つ要素を指定します。名前と呼び出したいXHTMLのパスを空白で区切ります。<a href="template_attr_pull">framexs:pull属性</a>で呼び出します。</td></tr>
 				<tr id="command_id"><td>framexs.id</td><td>指定したXHTMLの中のその名前の値を持つid属性を持つ要素を指定します。名前と呼び出したいXHTMLのパスを空白で区切ります。<a href="#template_attr_id-d">framexs:id-d属性</a>か<a href="#template_attr_id-sd">framexs:id-sd属性</a>で呼び出します。</td></tr>
 				<tr><td>framexs.element</td><td>指定したXHTMLのbody要素の子の中のその名前の要素を指定します。名前と呼び出したいXHTMLのパスを空白で区切ります。<a href="template_attr_element">framexs:element属性</a>で呼び出します。</td></tr>
 				<tr><td>framexs.def.tab</td><td>タブ表示をします。</td></tr>
 				<tr><td>framexs.def.js</td><td>指定したJavaScriptを読み込みます。</td></tr>
 				<tr><td>framexs.def.framexsjs</td><td>指定したJavaScriptをframexsアプリのJSにします。</td></tr>
-				<tr><td>framexs.def.saxonce</td><td>framexsアプリで使うSaxonCEを呼び出すパスを指定します。</td></tr>
 			</table>
 			<h4>framexs属性</h4>
 			<p>テンプレートではframexsの名前空間(<xsl:value-of select="$fmxns"/>)を持つ属性によってさまざまな機能が使えます。</p>
 			<table summary="">
 				<caption>テンプレートで使うframexs属性</caption>
-				<tr id="template_attr_pull" class="deprecated"><td>pull</td><td>廃止予定。コンテンツXHTMLかまたは<a class="framexs.command.name">framexs.pull</a>で定義したXHTMLファイルの中でidが値と一致する要素の子孫をコピーします。</td></tr>
-				<tr id="template_attr_pull-d" class="deprecated"><td>pull-d</td><td>コンテンツXHTMLかまたは<a class="framexs.command.name">framexs.pull</a>で定義したXHTMLファイルの中でidが値と一致する要素の子孫をコピーします。</td></tr>
-				<tr id="template_attr_pull-sd" class="deprecated"><td>pull-sd</td><td>コンテンツXHTMLかまたはframexs.pullで定義したXHTMLファイルの中でidが値と一致する要素とその子孫をコピーします。</td></tr>
 				<tr id="template_attr_id-d"><td>id-d</td><td>コンテンツXHTMLかまたは<a href="#command_id">framexs.id</a>で定義したXHTMLファイルの中でidが値と一致する要素の子孫をコピーします。</td></tr>
 				<tr id="template_attr_id-sd"><td>id-sd</td><td>コンテンツXHTMLかまたは<a href="#command_id">framexs.id</a>で定義したXHTMLファイルの中でidが値と一致する要素とその子孫をコピーします。</td></tr>
-				<tr id="template_attr_elelment"><td>elment</td><td>廃止予定。コンテンツXHTMLかまたはframexs.elementで定義したXHTMLファイルの中でidが値と一致する要素の子孫をコピーします。</td></tr>
-				<tr id="template_attr_elelment-d"><td>elment-d</td><td>コンテンツXHTMLかまたはframexs.elementで定義したXHTMLファイルの中でidが値と一致する要素の子孫をコピーします。</td></tr>
-				<tr id="template_attr_elelment-sd"><td>elment-sd</td><td>コンテンツXHTMLかまたはframexs.elementで定義したXHTMLファイルの中でidが値と一致する要素とその子孫をコピーします。</td></tr>
+				<tr id="template_attr_elelment-d"><td>element-d</td><td>コンテンツXHTMLかまたはframexs.elementで定義したXHTMLファイルの中でidが値と一致する要素の子孫をコピーします。</td></tr>
+				<tr id="template_attr_elelment-sd"><td>element-sd</td><td>コンテンツXHTMLかまたはframexs.elementで定義したXHTMLファイルの中でidが値と一致する要素とその子孫をコピーします。</td></tr>
 				<tr><td>fetch-d</td><td>framexs.fetchで指定したXMLのルートの子孫ノードをコピーします。</td></tr>
 				<tr><td>fetch-sd</td><td>framexs.fetchで指定したXMLをコピーします。</td></tr>
 				<tr><td>title</td><td>title要素のテキストに置き換えます。</td></tr>
+				<tr><td>fix</td><td>meta要素のみで使えます。contentをそのまま出力し合成しません。</td></tr>
 				<tr><td>meta-name</td><td>コンテンツのmeta要素の中でnameが一致する要素のcontent属性値に置き換えます。</td></tr>
 				<tr><td>meta-property</td><td>コンテンツのmeta要素の中でpropertyが一致するcontent属性値に置き換えます。</td></tr>
 				<tr><td>addpath</td><td>src、href、data属性にコンテンツのframexs.addpathで指定された値を先頭に加えます</td></tr>
@@ -152,10 +146,10 @@ XSLTで実現するフレームワーク framexs
 			<xsl:with-param name="targetid" select="$id"/>
 			<xsl:with-param name="self" select="$range = 'sd'"/>
 		</xsl:apply-templates>
-		<xsl:for-each select="$root/processing-instruction('framexs.id')">
+		<xsl:for-each select="$content/processing-instruction('framexs.id')">
 			<xsl:variable name="name" select="substring-before(.,' ')"/>
 			<xsl:if test="$id = $name">
-				<xsl:apply-templates mode="search-id" select="document(substring-after(.,' '),$root)/xh:*">
+				<xsl:apply-templates mode="search-id" select="document(substring-after(.,' '),$content)/xh:*">
 					<xsl:with-param name="targetid" select="$id"/>
 					<xsl:with-param name="self" select="$range = 'sd'"/>
 				</xsl:apply-templates>
@@ -180,62 +174,12 @@ XSLTで実現するフレームワーク framexs
 		</xsl:call-template>
 	</xsl:template>
 	
-	<!-- framexs:pullを処理 -->
-	<xsl:template match="xh:*[@framexs:pull-d]">
-		<xsl:variable name="pull" select="@framexs:pull-d"/>
-		<xsl:apply-templates mode="search-id" select="$content/xh:html">
-			<xsl:with-param name="targetid" select="$pull"></xsl:with-param>
-		</xsl:apply-templates>
-		<xsl:for-each select="$root/processing-instruction('framexs.pull')">
-			<xsl:variable name="name" select="substring-before(.,' ')"/>
-			<xsl:if test="$pull = $name">
-				<xsl:apply-templates mode="search-id" select="document(substring-after(.,' '),$root)/xh:*">
-					<xsl:with-param name="targetid" select="$pull"></xsl:with-param>
-				</xsl:apply-templates>
-			</xsl:if>
-		</xsl:for-each>
-	</xsl:template>
-
-	<!-- framexs:pullを処理 -->
-	<xsl:template match="xh:*[@framexs:pull-sd]">
-		<xsl:variable name="pull" select="@framexs:pull-sd"/>
-		<xsl:apply-templates mode="search-id" select="$content/xh:html">
-			<xsl:with-param name="targetid" select="$pull"/>
-			<xsl:with-param name="self" select="true()"/>
-		</xsl:apply-templates>
-		<xsl:for-each select="$root/processing-instruction('framexs.pull')">
-			<xsl:variable name="name" select="substring-before(.,' ')"/>
-			<xsl:if test="$pull = $name">
-				<xsl:apply-templates mode="search-id" select="document(substring-after(.,' '),$root)/xh:*">
-					<xsl:with-param name="targetid" select="$pull"/>
-					<xsl:with-param name="self" select="true()"/>
-				</xsl:apply-templates>
-			</xsl:if>
-		</xsl:for-each>
-	</xsl:template>
-	<!-- framexs:pullを処理 -->
-	<xsl:template match="xh:*[@framexs:pull]">
-		<xsl:variable name="pull" select="@framexs:pull"/>
-		<xsl:apply-templates mode="search-id" select="$content/xh:html">
-			<xsl:with-param name="targetid" select="$pull"></xsl:with-param>
-		</xsl:apply-templates>
-		<xsl:for-each select="$root/processing-instruction('framexs.pull')">
-			<xsl:variable name="name" select="substring-before(.,' ')"/>
-			<xsl:if test="$pull = $name">
-				<xsl:apply-templates mode="search-id" select="document(substring-after(.,' '),$root)/xh:*">
-					<xsl:with-param name="targetid" select="$pull"></xsl:with-param>
-				</xsl:apply-templates>
-			</xsl:if>
-		</xsl:for-each>
-	</xsl:template>
-	<!--<xsl:template match="xh:*[@framexs:for]">
-        <xsl:variable name="for" select="@framexs:for"></xsl:variable>
-    </xsl:template>-->
     <xsl:template match="xh:*[@framexs:ifexist]">
         <xsl:variable name="ifexist" select="@framexs:ifexist"/>
         <xsl:apply-templates></xsl:apply-templates>
     </xsl:template>
     
+	<!-- framexs:element-dまたはframexs:element-sdを処理するxsl:templateから呼び出される -->
     <xsl:template name="element">
     	<xsl:param name="self" select="false()"/>
     	<xsl:param name="element"/>
@@ -251,10 +195,10 @@ XSLTで実現するフレームワーク framexs
 				</xsl:choose>
 			</xsl:if>
 		</xsl:for-each>
-		<xsl:for-each select="$root/processing-instruction('framexs.element')">
+		<xsl:for-each select="$content/processing-instruction('framexs.element')">
 			<xsl:variable name="name" select="substring-before(., ' ')"/>
 			<xsl:if test="$element = $name">
-				<xsl:for-each select="document(substring-after(.,' '),$root)/xh:html/xh:body/xh:*">
+				<xsl:for-each select="document(substring-after(.,' '),$content)/xh:html/xh:body/xh:*">
 					<xsl:if test="name() = $element">
 						<xsl:choose>
 							<xsl:when test="$self">
@@ -269,6 +213,7 @@ XSLTで実現するフレームワーク framexs
 			</xsl:if>
 		</xsl:for-each>
     </xsl:template>
+
     <xsl:template match="xh:*[@framexs:element-sd]">
 		<xsl:call-template name="element">
 			<xsl:with-param name="element" select="@framexs:element-sd"/>
@@ -281,34 +226,28 @@ XSLTで実現するフレームワーク framexs
 			<xsl:with-param name="self" select="false()"/>
 		</xsl:call-template>
 	</xsl:template>
-	<xsl:template match="xh:*[@framexs:element]">
-		<xsl:call-template name="element">
-			<xsl:with-param name="element" select="@framexs:element"/>
-			<xsl:with-param name="self" select="false()"/>
-		</xsl:call-template>
-	</xsl:template>
 
 	<xsl:template match="xh:*[@framexs:fetch-sd]">
 		<xsl:variable name="name" select="@framexs:fetch-sd"/>
-		<xsl:for-each select="$root/processing-instruction('framexs.fetch')">
+		<xsl:for-each select="$content/processing-instruction('framexs.fetch')">
 			<xsl:if test="$name = substring-before(.,' ')">
-				<xsl:apply-templates mode="content" select="document(substring-after(.,' '), $root)/*"/>
+				<xsl:apply-templates mode="content" select="document(substring-after(.,' '), $content)/*"/>
 			</xsl:if>
 		</xsl:for-each>
 	</xsl:template>
 	<xsl:template match="xh:*[@framexs:fetch-d]">
 		<xsl:variable name="name" select="@framexs:fetch-d"/>
-		<xsl:for-each select="$root/processing-instruction('framexs.fetch')">
+		<xsl:for-each select="$content/processing-instruction('framexs.fetch')">
 			<xsl:if test="$name = substring-before(.,' ')">
-				<xsl:apply-templates mode="content" select="document(substring-after(.,' '), $root)/*"/>
+				<xsl:apply-templates mode="content" select="document(substring-after(.,' '), $content)/*[1]/*"/>
 			</xsl:if>
 		</xsl:for-each>
 	</xsl:template>
 	<xsl:template match="xh:*[@framexs:copy]">
 		<xsl:variable name="name" select="@framexs:copy"/>
-		<xsl:for-each select="$root/processing-instruction('framexs.copy')">
+		<xsl:for-each select="$content/processing-instruction('framexs.copy')">
 			<xsl:if test="$name = substring-before(.,' ')">
-				<xsl:apply-templates mode="content" select="document(substring-after(.,' '), $root)/*"/>
+				<xsl:apply-templates mode="content" select="document(substring-after(.,' '), $content)/*"/>
 			</xsl:if>
 		</xsl:for-each>
 	</xsl:template>
@@ -358,13 +297,15 @@ XSLTで実現するフレームワーク framexs
 	</xsl:template>
 	<!-- 何も出力しない -->
 	<xsl:template match="xh:*[@framexs:print='no']"/>
+	<xsl:template match="xh:*[@framexs:noprint]"/>
 	
 	<xsl:template match="xh:title">
 		<xsl:element name="title">
-			<xsl:value-of select="concat($root/xh:html/xh:head/xh:title/text(),.)"/>
+			<xsl:value-of select="concat($content/xh:html/xh:head/xh:title/text(),.)"/>
 		</xsl:element>
 	</xsl:template>
 	
+	<!-- meta要素は特別な扱いをする -->
 	<xsl:template name="metatemplate">
 		<xsl:param name="target"/>
 		<xsl:param name="base"/>
@@ -381,23 +322,31 @@ XSLTで実現するフレームワーク framexs
 			</xsl:for-each>
 		</xsl:element>
 	</xsl:template>
-	
-	<xsl:template match="xh:meta[@name]">
-		<xsl:variable name="base" select="."></xsl:variable>
-		<xsl:for-each select="$root/xh:html/xh:head/xh:meta[@name]">
+
+	<xsl:template match="xh:meta[@framexs:fix]">
+		<xsl:element name="{name()}">
+			<xsl:for-each select="@*[not(namespace-uri(.) = $fmxns)]">
+				<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
+			</xsl:for-each>
+		</xsl:element>
+	</xsl:template>
+
+	<xsl:template match="xh:meta[@name and not(@framexs:fix)]">
+		<xsl:variable name="template" select="."></xsl:variable>
+		<xsl:for-each select="$content/xh:html/xh:head/xh:meta[@name]">
 			<xsl:variable name="target" select="."></xsl:variable>
-			<xsl:if test="$base/@name=$target/@name">
+			<xsl:if test="$template/@name=$target/@name">
 				<xsl:call-template name="metatemplate">
-					<xsl:with-param name="base" select="$base"/>
+					<xsl:with-param name="base" select="$template"/>
 					<xsl:with-param name="target" select="$target"/>
 				</xsl:call-template>
 			</xsl:if>
 		</xsl:for-each>
 	</xsl:template>
 	
-	<xsl:template match="xh:meta[@property]">
+	<xsl:template match="xh:meta[@property and not(@framexs:fix)]">
 		<xsl:variable name="base" select="."></xsl:variable>
-		<xsl:for-each select="$root/xh:html/xh:head/xh:meta[@property]">
+		<xsl:for-each select="$content/xh:html/xh:head/xh:meta[@property]">
 			<xsl:variable name="target" select="."></xsl:variable>
 			<xsl:if test="$base/@property=$target/@property">
 				<xsl:call-template name="metatemplate">
@@ -409,7 +358,7 @@ XSLTで実現するフレームワーク framexs
 	</xsl:template>
 	
 	<xsl:template match="xh:*[@framexs:load]">
-		<xsl:for-each select="$root/xh:html/xh:head/xh:*">
+		<xsl:for-each select="$content/xh:html/xh:head/xh:*">
 			<xsl:if test="name() = @framexs:load">
 				<xsl:copy-of select="."/>
 			</xsl:if>
@@ -432,6 +381,9 @@ XSLTで実現するフレームワーク framexs
 							<xsl:when test="$addpath = 'on'">
 								<xsl:attribute name="{name()}"><xsl:value-of select="$framexs.addpath"/><xsl:value-of select="."/></xsl:attribute>
 							</xsl:when>
+							<xsl:when test="$addpath">
+								<xsl:attribute name="{name()}"><xsl:value-of select="$framexs.addpath"/><xsl:value-of select="."/></xsl:attribute>
+							</xsl:when>							
 							<xsl:otherwise>
 								<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
 							</xsl:otherwise>
@@ -533,7 +485,7 @@ XSLTで実現するフレームワーク framexs
 						</script>
 					</xsl:when>
 					<xsl:otherwise>
-						<script async="async" src="http://www.bbwtest.info/~nandaka_furari/framexs/framexs.js"></script>
+						<script async="async" src="https://nandaka-furari.github.io/framexs/framexs.js"></script>
 					</xsl:otherwise>
 				</xsl:choose>
 				
@@ -665,7 +617,7 @@ td,th {border: solid 1px gray;}
 						<dt>xsl:vendor</dt><dd><xsl:value-of select="system-property('xsl:vendor')"/></dd>
 						<dt>xsl:vendor-url</dt><dd><xsl:value-of select="system-property('xsl:vendor-url')"/></dd>
 						</dl></div>
-						<p><object data="http://www.bbwtest.info/~nandaka_furari/files/html/framexs-analytics.html" type="text/html" width="160" height="90"></object></p>
+						<p><object data="https://nandaka-furari.github.io/framexs/framexs-analytics.html" type="text/html" width="160" height="90"></object></p>
 					</aside>
 				</div>
 				<footer  id="footer-panel" class="row">
@@ -673,8 +625,8 @@ td,th {border: solid 1px gray;}
 						<div class="panel panel-default">
 							<div class="panel-heading">framexs</div>
 							<ul class="panel-body list-group">
-								<li class="list-group-item"><a href="http://www.bbwtest.info/~nandaka_furari/framexs/index.xhtml">web site</a></li>
-								<li class="list-group-item"><a href="http://www.bbwtest.info/~nandaka_furari/framexs/framexs.xml">仕様</a></li>
+								<li class="list-group-item"><a href="https://nandaka-furari.github.io/framexs/index.xhtml">web site</a></li>
+								<li class="list-group-item"><a href="https://nandaka-furari.github.io/framexs/framexs.xml">仕様</a></li>
 								<li class="list-group-item"><a href="https://github.com/nandaka-furari/framexs">GitHub</a></li>
 							</ul>
 						</div>
@@ -690,7 +642,7 @@ td,th {border: solid 1px gray;}
 									<a href="https://github.com/nandaka-furari">ぎっとはぶ</a>
 								</li>
 								<li class="list-group-item">
-									<a href="http://www.bbwtest.info/~nandaka_furari/">website</a>
+									<a href="https://nandaka-furari.github.io/">website</a>
 								</li>
 							</ul>
 						</address>
