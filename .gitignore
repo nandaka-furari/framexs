@@ -1,5 +1,5 @@
 node_modules/
-electron/node_modules/
+labo/electron/node_modules/
 .dest/
 .settings/
 .project
