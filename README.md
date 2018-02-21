@@ -1,4 +1,4 @@
-XHTMLフレームワーク：framexs
+framexsフレームワーク 1.2.0
 ---
 ## 初めに
 
@@ -8,69 +8,46 @@ framexsは主にブラウザーからウェブサイトにアクセスして(X)H
 https://nandaka-furari.github.io/framexs/framexs.xml
 https://nandaka-furari.github.io/framexs/index.xhtml
 
-### こんにちわ世界！
-XHTMLについて実際のコード見ていきます。まずはコンテンツデータを見てみましょう。
 
-```xml:content.xhtml
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="application/xml" href="../../framexs.xml"?>
-<?framexs.skelton template.xhtml?>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>世界よこんにちは</title>
-</head>
-<body>
-<main>
-<h1>あいさつ</h1>
-<p>ハローワールド！</p>
-</main>
-</body>
-</html>
-```
+## XHTMLモード
+名前空間がhttp://www.w3.org/1999/xhtmlのXHTMLでframexs.skeltonコマンドがある場合です。テンプレートとコンテンツは名前空間がhttp://www.w3.org/1999/xhtmlのXHTMLを使います。テンプレートにはframexsの名前空間urn:framexsも必要です。
+framexs.skeltonが#のときはデフォルトのテンプレート的な内部での処理を行います。
 
-次にテンプレートを見ていきます。
+## framexsコマンド
+XMLのプロローグ部において処理命令のうち名前の先頭にframexsが付くものをframexsコマンドと呼ぶものとします。
 
-```xml:template.xhtml
-<?xml version="1.0" encoding="UTF-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:framexs="urn:framexs">
-<head>
-<title> - テンプレートタイトル</title>
-</head>
-<body>
-<article><p framexs:element-d="main">コンテンツのmain部分を読み込み置き換える</p></article>
-</body>
-</html>
-```
+先頭にframexs.defがあるものはframexs.skeltonが#の時にあるいは一般的なXMLの時に有効です。
 
-そして変換結果はおおよそ次のようになります。処理系によって若干違う可能性があり正確にこうならないかもしれません。jEditでは空行や空白などが生成されましたがここでは見やすさのためにそれを削除しています。
+## framexsコマンド一覧
 
-```xml:result
-<!DOCTYPE html SYSTEM "about:legacy-compat">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>コンテンツタイトル - テンプレートタイトル</title>
-</head>
-<body>
-<article>
-<h1>あいさつ</h1>
-<p>ハローワールド！</p>
-</article>
-</body>
-</html>
-```
+|名前|解説|
+|---------------|---|
+|framexs.skelton|テンプレートのパスを指定します。"#"にすると内蔵の処理機構を適用します。|
+|framexs.base   |テンプレートにbase要素がある場合、この値で上書きします。               |
+|framexs.addpath|テンプレートのframexs:addpathがある要素のhref、src、data属性の先頭にこの値を付け足します。|
+|framexs.fetch  |XMLを指定します。名前と呼び出したいXMLのパスを空白で区切ります。framexs:copyで呼び出します。|
+|framexs.id     |指定したXHTMLの中のその名前の値を持つid属性を持つ要素を指定します。名前と呼び出したいXHTMLのパスを空白で区切ります。framexs:id-d属性かframexs:id-sd属性で呼び出します。|
+|framexs.element|指定したXHTMLのbody要素の子の中のその名前の要素を指定します。名前と呼び出したいXHTMLのパスを空白で区切ります。framexs:element属性で呼び出します。|
+|framexs.def.tab|タブ表示をします。|
+|framexs.def.js |指定したJavaScriptを読み込みます。|
 
-テンプレートとコンテンツが合成されたHTMLになります。
-title要素のテキストも合成されており、コンテンツのtitle要素のテキストにテンプレートのtitle要素のテキストを加えたものになっています。合成するテキストの順番は固定です。
+framexs属性
+テンプレートではframexsの名前空間(urn:framexs)を持つ属性によってさまざまな機能が使えます。
 
-この処理方法はMVCパターンといえると思います。モデルはコンテンツでビューはテンプレート、コントローラーはframexsとコンテンツのframexsコマンドに相当します。XSLは重要な役目を負っていますがただ単に利用するだけならXSLコードは一切書く必要はありません。framexsにおいてXSLを書く役割りを持つのは私だけだからです（今のところは、ですが。XSLを書くのに協力してくれる方がいれば大歓迎します）。
+## テンプレートで使うframexs属性
 
-## 原理と応用
-
-framexsはXSLなのでXSLT処理を行わせるタイミングや方法としては
-
-* ケース1 クライアントのアクセスごとにクライアント側のブラウザでXSLTを行わせ、同時に結果HTMLを処理させる。
-* ケース2 クライアントのアクセスごとにサーバー側でXSLT処理を行い、クライアントに対して結果HTMLをサーバーが出力する。
-* ケース3 Static Site Generatorとしてコンテンツに対して任意のプログラムにXSLTを行わせ結果HTMLを作っておき、クライアントからのアクセスではそれらのファイルを直接出力する。
-
-などがあります。今回はケース1のみの解説ですが、他のケースで活用することは可能なはずです。
+|名前|解説|
+|-------------|---|
+|id-d         |コンテンツXHTMLかまたはframexs.idで定義したXHTMLファイルの中でidが値と一致する要素の子孫をコピーします。|
+|id-sd        |コンテンツXHTMLかまたはframexs.idで定義したXHTMLファイルの中でidが値と一致する要素とその子孫をコピーします。|
+|element-d    |コンテンツXHTMLかまたはframexs.elementで定義したXHTMLファイルの中でidが値と一致する要素の子孫をコピーします。|
+|element-sd   |コンテンツXHTMLかまたはframexs.elementで定義したXHTMLファイルの中でidが値と一致する要素とその子孫をコピーします。|
+|fetch-d      |framexs.fetchで指定したXMLのルートの子孫ノードをコピーします。|
+|fetch-sd     |framexs.fetchで指定したXMLをコピーします。|
+|title        |title要素のテキストに置き換えます。|
+|fix          |meta要素のみで使えます。contentをそのまま出力し合成しません。|
+|meta-name    |コンテンツのmeta要素の中でnameが一致する要素のcontent属性値に置き換えます。|
+|meta-property|コンテンツのmeta要素の中でpropertyが一致するcontent属性値に置き換えます。|
+|addpath      |src、href、data属性にコンテンツのframexs.addpathで指定された値を先頭に加えます|
+|print        |noを指定するとその要素を含めて結果に出力しません。|
+|load         |meta要素のみで使えます。読み込む要素名を指定するとコンテンツのhead直下の要素を指定します。script、style、linkが指定可能です。|
