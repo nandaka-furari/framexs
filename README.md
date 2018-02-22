@@ -2,16 +2,10 @@ framexsフレームワーク 1.2.0
 ---
 ## 初めに
 
-framexsは主にブラウザーからウェブサイトにアクセスして(X)HTMLを読む場合を想定し、XHTMLのコンテンツとテンプレートから柔軟に効率的にHTMLを作りそれを読ませる目的のフレームワークです。XSL(XSLT 1.0)で書かれていてXSLTプロセッサーに処理を行わせます。一般的なXMLをHTMLに変換する機能もあります。
-最低限の仕様の解説と原理はframexsそのものに書かれています。
-
-https://nandaka-furari.github.io/framexs/framexs.xml
-https://nandaka-furari.github.io/framexs/index.xhtml
-
-
+framexsは主にブラウザーからウェブサイトにアクセスして(X)HTMLを読む場合を想定し、XHTMLのコンテンツとテンプレートから柔軟に効率的にHTMLを作りそれを読ませる目的のフレームワークです。XSL(XSLT 1.0)で書かれていてXSLTプロセッサーに処理を行わせます。
+    
 ## XHTMLモード
-名前空間がhttp://www.w3.org/1999/xhtmlのXHTMLでframexs.skeltonコマンドがある場合です。テンプレートとコンテンツは名前空間がhttp://www.w3.org/1999/xhtmlのXHTMLを使います。テンプレートにはframexsの名前空間urn:framexsも必要です。
-framexs.skeltonが#のときはデフォルトのテンプレート的な内部での処理を行います。
+名前空間が`http://www.w3.org/1999/xhtml`のXHTMLでframexs.skeltonコマンドがある場合です。テンプレートとコンテンツは名前空間が`http://www.w3.org/1999/xhtml`のXHTMLを使います。テンプレートにはframexsの名前空間urn:framexsも必要です。
 
 ## framexsコマンド
 XMLのプロローグ部において処理命令のうち名前の先頭にframexsが付くものをframexsコマンドと呼ぶものとします。
