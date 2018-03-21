@@ -1,4 +1,4 @@
-framexsフレームワーク 1.3.0
+XSLTフレームワーク framexs 1.3.0
 ---
 ## 初めに
 
@@ -25,7 +25,7 @@ XMLのプロローグ部において処理命令のうち名前の先頭にframe
 |framexs.def.tab|タブ表示をします。|
 |framexs.def.js |指定したJavaScriptを読み込みます。|
 
-framexs属性
+## framexs属性
 テンプレートではframexsの名前空間(urn:framexs)を持つ属性によってさまざまな機能が使えます。
 
 ## テンプレートで使うframexs属性

@@ -7,31 +7,20 @@ XSLTで実現するフレームワーク framexs
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xh="http://www.w3.org/1999/xhtml" xmlns:framexs="urn:framexs" version="1.0">
 	<xsl:output encoding="UTF-8" media-type="text/html" method="html" doctype-system="about:legacy-compat"/>
-	<xsl:param name="framexs" select="boolean(/processing-instruction('framexs'))"/>
-
 
 	<!-- skelton_locが指定されればXHTMLテンプレート処理を行う -->
 	<xsl:param name="skelton_loc" select="/processing-instruction('framexs.skelton')"/>
 	<xsl:param name="framexs.base" select="/processing-instruction('framexs.base')"/>
 	<xsl:param name="framexs.addpath" select="/processing-instruction('framexs.addpath')"/>
 
-	<!-- デフォルト処理s -->
-	<xsl:param name="framexs.tab" select="/processing-instruction('framexs.def.tab')"/>
-	<xsl:param name="css_loc" select="/processing-instruction('framexs.def.css')"/>
-	<xsl:param name="js_loc" select="/processing-instruction('framexs.def.js')"/>
-	<xsl:param name="framexsjs_loc" select="/processing-instruction('framexs.def.framexsjs')"/>
-	<xsl:param name="desc" select="$framexs.tab and contains($framexs.tab,'desc')"/>
-	<xsl:param name="copy" select="$framexs.tab and contains($framexs.tab,'copy')"/>
-
-	<xsl:variable name="root" select="/"></xsl:variable>
-	<xsl:variable name="content" select="$root"></xsl:variable>
-	<xsl:variable name="rootns" select="namespace-uri(*[1])"/>
+	<xsl:variable name="root" select="/"/>
+	<xsl:variable name="content" select="$root"/>
 	<xsl:variable name="xhns" select="'http://www.w3.org/1999/xhtml'"/>
 	<xsl:variable name="fmxns" select="'urn:framexs'"/>
 	<xsl:variable name="empty" select="''"/>
-	<xsl:variable name="version" select="'1.3.0'"/>
+	<xsl:variable name="version" select="'1.3.1'"/>
 	
-	<xsl:template match="/" name="test">
+	<xsl:template match="/">
 		<xsl:message>framexs <xsl:value-of select="$version"/></xsl:message>
 		<!-- 基本的な処理分けを行う。XHTMLか一般XMLか -->
 		<xsl:choose>
@@ -41,6 +30,15 @@ XSLTで実現するフレームワーク framexs
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:message>一般XML</xsl:message>
+				<html>
+					<head>
+						<title>エラー</title>
+					</head>
+					<body>
+						<p>framexs:<xsl:value-of select="$version"/></p>
+						<p>テンプレートは名前空間(<xsl:value-of select="$xhns"/>)を持ったXHTMLを指定してください</p>
+					</body>
+				</html>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -48,8 +46,8 @@ XSLTで実現するフレームワーク framexs
 	<!--  -->
 	<xsl:template match="xh:*" mode="content">
 		<xsl:element name="{name()}">
-			<xsl:apply-templates mode="content" select="@*"></xsl:apply-templates>
-			<xsl:apply-templates mode="content" select="node()"></xsl:apply-templates>
+			<xsl:apply-templates mode="content" select="@*"/>
+			<xsl:apply-templates mode="content" select="node()"/>
 		</xsl:element>
 	</xsl:template>
 	
@@ -67,10 +65,10 @@ XSLTで実現するフレームワーク framexs
 			<xsl:when test="@id = $targetid">
 				<xsl:choose>
 					<xsl:when test="$self">
-						<xsl:apply-templates mode="content" select="."></xsl:apply-templates>
+						<xsl:apply-templates mode="content" select="."/>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:apply-templates mode="content" select="node()"></xsl:apply-templates>
+						<xsl:apply-templates mode="content" select="node()"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
