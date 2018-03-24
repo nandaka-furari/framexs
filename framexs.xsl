@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet type="application/xml" href="framexs.xml"?>
-<?framexs?>
-<?framexs.def.js framexs.js?>
+<?xml-stylesheet type="application/xml" href="framexs.xsl"?>
 <!--
 XSLTで実現するフレームワーク framexs
 -->
@@ -18,7 +16,7 @@ XSLTで実現するフレームワーク framexs
 	<xsl:variable name="xhns" select="'http://www.w3.org/1999/xhtml'"/>
 	<xsl:variable name="fmxns" select="'urn:framexs'"/>
 	<xsl:variable name="empty" select="''"/>
-	<xsl:variable name="version" select="'1.3.1'"/>
+	<xsl:variable name="version" select="'1.3.2'"/>
 	
 	<xsl:template match="/">
 		<xsl:message>framexs <xsl:value-of select="$version"/></xsl:message>
@@ -35,7 +33,7 @@ XSLTで実現するフレームワーク framexs
 						<title>エラー</title>
 					</head>
 					<body>
-						<p>framexs:<xsl:value-of select="$version"/></p>
+						<p>framexsバージョン:<xsl:value-of select="$version"/></p>
 						<p>テンプレートは名前空間(<xsl:value-of select="$xhns"/>)を持ったXHTMLを指定してください</p>
 					</body>
 				</html>
