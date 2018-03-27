@@ -16,7 +16,7 @@ XSLTで実現するフレームワーク framexs
 	<xsl:variable name="xhns" select="'http://www.w3.org/1999/xhtml'"/>
 	<xsl:variable name="fmxns" select="'urn:framexs'"/>
 	<xsl:variable name="empty" select="''"/>
-	<xsl:variable name="version" select="'1.3.2'"/>
+	<xsl:variable name="version" select="'1.3.3'"/>
 	
 	<xsl:template match="/">
 		<xsl:message>framexs <xsl:value-of select="$version"/></xsl:message>
@@ -24,7 +24,7 @@ XSLTで実現するフレームワーク framexs
 		<xsl:choose>
 			<xsl:when test="$skelton_loc and namespace-uri(*[1]) = $xhns">
 				<xsl:message>content</xsl:message>
-				<xsl:apply-templates select="document($skelton_loc)/xh:html"/>
+				<xsl:apply-templates select="document($skelton_loc)/*"/>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:message>一般XML</xsl:message>
@@ -339,42 +339,5 @@ XSLTで実現するフレームワーク framexs
 			<xsl:apply-templates/>
 		</xsl:element>
 	</xsl:template>
-		
-	<xsl:template match="*" mode="xmltohtml">
-		<div class="element {name()}">
-			<p>
-				<span class="elemicon fa fa-folder-o"> </span>
-				<span class="elemname">
-					<xsl:value-of select="name()"></xsl:value-of>
-				</span>
-				<xsl:for-each select="@*">
-					<span class="attricon fa fa-cogs"> </span>
-					<span class="attr">
-						<span class="name">
-							<xsl:value-of select="name()"/>
-						</span>
-						<xsl:text>=</xsl:text>
-						<span class="value">
-							<xsl:value-of select="."/>
-						</span>
-					</span>
-					<xsl:text>&#160;</xsl:text>
-				</xsl:for-each>
-			</p>
-			<xsl:apply-templates mode="xmltohtml"/>
-		</div>
-	</xsl:template>
-	<!--framexs:attr-となっている場合の処理-->
-    <xsl:template match="xh:*[@framexs:* and starts-with(local-name(@framexs:*),'attr-')]">
-    	<xsl:variable name="attrname" select="substring-after(local-name(@framexs:*),'attr-')"></xsl:variable>
-    	<xsl:value-of select="$attrname"/>
-    	<xsl:variable name="elename" select="name()"></xsl:variable>
-    	<xsl:element name="{$elename}">
-			<xsl:for-each select="@*">
-				<xsl:if test="name() = $attrname">
-					<xsl:attribute name="{$attrname}"><xsl:value-of select="'attr'"/></xsl:attribute>
-				</xsl:if>
-			</xsl:for-each>
-    	</xsl:element>
-    </xsl:template>
+
 </xsl:stylesheet>
