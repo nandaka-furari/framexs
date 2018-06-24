@@ -6,8 +6,8 @@ XSLTで実現するフレームワーク framexs
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xh="http://www.w3.org/1999/xhtml" xmlns:framexs="urn:framexs" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" version="1.0">
 	<xsl:output encoding="UTF-8" media-type="text/html" method="html" doctype-system="about:legacy-compat"/>
 
-	<!-- skelton_locが指定されればXHTMLテンプレート処理を行う -->
-	<xsl:param name="skelton_loc" select="/processing-instruction('framexs.skelton')"/>
+	<!-- skeleton_locが指定されればXHTMLテンプレート処理を行う -->
+	<xsl:param name="skeleton_loc" select="/processing-instruction('framexs.skeleton')"/>
 	<xsl:param name="framexs.base" select="/processing-instruction('framexs.base')"/>
 	<xsl:param name="framexs.addpath" select="/processing-instruction('framexs.addpath')"/>
 	
@@ -23,9 +23,9 @@ XSLTで実現するフレームワーク framexs
 		</xsl:message>
 		<!-- 基本的な処理分けを行う。XHTMLか一般XMLか -->
 		<xsl:choose>
-			<xsl:when test="$skelton_loc and namespace-uri(*[1]) = $xhns">
+			<xsl:when test="$skeleton_loc and namespace-uri(*[1]) = $xhns">
 				<xsl:message>content</xsl:message>
-				<xsl:apply-templates select="document($skelton_loc)/*"/>
+				<xsl:apply-templates select="document($skeleton_loc)/*"/>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:message>一般XML</xsl:message>

@@ -17,7 +17,7 @@ XSLTで実現するフレームワーク framexs
 			</xsl:when>
 			<xsl:otherwise>
 				<!-- 用語集から略語の正式名を取得して出力 -->
-				<xsl:apply-templates select="document(document($skelton_loc)/processing-instruction('framexs.plugin.skos'))/rdf:RDF/skos:Concept[skos:altLabel = current()]">
+				<xsl:apply-templates select="document(document($skeleton_loc)/processing-instruction('framexs.plugin.skos'))/rdf:RDF/skos:Concept[skos:altLabel = current()]">
 					<xsl:with-param name="abbr" select="self::node()"/>
 				</xsl:apply-templates>
 			</xsl:otherwise>
@@ -35,7 +35,7 @@ XSLTで実現するフレームワーク framexs
 	<!--  -->
 	<xsl:template match="xh:*" mode="content">
 		<xsl:choose>
-			<xsl:when test="boolean(document($skelton_loc)/processing-instruction('framexs.plugin.skos')) and name() = 'abbr'">
+			<xsl:when test="boolean(document($skeleton_loc)/processing-instruction('framexs.plugin.skos')) and name() = 'abbr'">
 				<xsl:apply-templates select="."/>
 			</xsl:when>
 			<xsl:otherwise>
