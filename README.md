@@ -5,18 +5,16 @@ XSLTフレームワーク framexs 1.3.0
 framexsは主にブラウザーからウェブサイトにアクセスして(X)HTMLを読む場合を想定し、XHTMLのコンテンツとテンプレートから柔軟に効率的にHTMLを作りそれを読ませる目的のフレームワークです。XSL(XSLT 1.0)で書かれていてXSLTプロセッサーに処理を行わせます。
     
 ## XHTMLモード
-名前空間が`http://www.w3.org/1999/xhtml`のXHTMLでframexs.skeltonコマンドがある場合です。テンプレートとコンテンツは名前空間が`http://www.w3.org/1999/xhtml`のXHTMLを使います。テンプレートにはframexsの名前空間urn:framexsも必要です。
+名前空間が`http://www.w3.org/1999/xhtml`のXHTMLでframexs.skeletonコマンドがある場合です。テンプレートとコンテンツは名前空間が`http://www.w3.org/1999/xhtml`のXHTMLを使います。テンプレートにはframexsの名前空間urn:framexsも必要です。
 
 ## framexsコマンド
 XMLのプロローグ部において処理命令のうち名前の先頭にframexsが付くものをframexsコマンドと呼ぶものとします。
-
-先頭にframexs.defがあるものはframexs.skeltonが#の時にあるいは一般的なXMLの時に有効です。
 
 ## framexsコマンド一覧
 
 |名前           |解説|
 |---------------|---|
-|framexs.skelton|テンプレートのパスを指定します。|
+|framexs.skeleton|テンプレートのパスを指定します。|
 |framexs.base   |テンプレートにbase要素がある場合、この値で上書きします。               |
 |framexs.addpath|テンプレートのframexs:addpathがある要素のhref、src、data属性の先頭にこの値を付け足します。|
 |framexs.fetch  |XMLを指定します。名前と呼び出したいXMLのパスを空白で区切ります。framexs:fetch-d属性かframexs:fetch-sd属性で呼び出します。|
