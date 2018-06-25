@@ -330,10 +330,10 @@ XSLTで実現するフレームワーク framexs
 						</xsl:variable>
 						<xsl:choose>
 							<xsl:when test="not($absolute) and not(starts-with(., '#'))">
-								<xsl:attribute name="{name()}"><xsl:value-of select="$framexs.addpath"/><xsl:value-of select="."/></xsl:attribute>
+								<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
 							</xsl:when>
 							<xsl:otherwise>
-								<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
+								<xsl:attribute name="{name()}"><xsl:value-of select="$framexs.addpath"/><xsl:value-of select="."/></xsl:attribute>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
