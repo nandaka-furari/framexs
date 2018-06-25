@@ -17,7 +17,7 @@ XSLTで実現するフレームワーク framexs
 	<xsl:variable name="xhns" select="'http://www.w3.org/1999/xhtml'"/>
 	<xsl:variable name="fmxns" select="'urn:framexs'"/>
 	<xsl:variable name="empty" select="''"/>
-	<xsl:variable name="version" select="'1.4.1'"/>
+	<xsl:variable name="version" select="'1.4.2'"/>
 	
 	<xsl:template match="/">
 		<xsl:message>framexs <xsl:value-of select="$version"/></xsl:message>
@@ -328,14 +328,12 @@ XSLTで実現するフレームワーク framexs
 								<xsl:with-param name="uri" select="."></xsl:with-param>
 							</xsl:call-template>
 						</xsl:variable>
-						<xsl:choose>
-							<xsl:when test="not($absolute = 'true') and not(starts-with(., '#'))">
-								<xsl:attribute name="{name()}"><xsl:value-of select="$framexs.addpath"/><xsl:value-of select="."/></xsl:attribute>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
-							</xsl:otherwise>
-						</xsl:choose>
+						<xsl:attribute name="{name()}">
+							<xsl:if test="not($absolute = 'true') and not(starts-with(., '#'))">
+								<xsl:value-of select="$framexs.addpath"/>
+							</xsl:if>
+							<xsl:value-of select="."/>
+						</xsl:attribute>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:if test="namespace-uri() != 'urn:framexs'">
