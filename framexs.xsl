@@ -10,14 +10,14 @@ XSLTで実現するフレームワーク framexs
 	<xsl:param name="skelton_loc" select="/processing-instruction('framexs.skelton')"/>
 	<xsl:param name="skeleton_loc" select="/processing-instruction('framexs.skeleton')"/>
 	<xsl:param name="framexs.base" select="/processing-instruction('framexs.base')"/>
-	<xsl:param name="framexs.addpath" select="/processing-instruction('framexs.addpath')"/>
+	<xsl:param name="framexs.addpath" select="concat($skeleton_loc, '/../')"/>
 
 	<xsl:variable name="root" select="/"/>
 	<xsl:variable name="content" select="$root"/>
 	<xsl:variable name="xhns" select="'http://www.w3.org/1999/xhtml'"/>
 	<xsl:variable name="fmxns" select="'urn:framexs'"/>
 	<xsl:variable name="empty" select="''"/>
-	<xsl:variable name="version" select="'1.3.4'"/>
+	<xsl:variable name="version" select="'1.4.0'"/>
 	
 	<xsl:template match="/">
 		<xsl:message>framexs <xsl:value-of select="$version"/></xsl:message>
@@ -323,13 +323,15 @@ XSLTで実現するフレームワーク framexs
 			<xsl:for-each select="@*">
 				<xsl:choose>
 					<xsl:when test="name() = 'src' or name() = 'href' or name() = 'data'">
+						<xsl:variable name="absolute">
+							<xsl:call-template name="is-absolute">
+								<xsl:with-param name="uri" select="."></xsl:with-param>
+							</xsl:call-template>
+						</xsl:variable>
 						<xsl:choose>
-							<xsl:when test="$addpath = 'on'">
+							<xsl:when test="not($absolute) and not(starts-with(., '#'))">
 								<xsl:attribute name="{name()}"><xsl:value-of select="$framexs.addpath"/><xsl:value-of select="."/></xsl:attribute>
 							</xsl:when>
-							<xsl:when test="$addpath">
-								<xsl:attribute name="{name()}"><xsl:value-of select="$framexs.addpath"/><xsl:value-of select="."/></xsl:attribute>
-							</xsl:when>							
 							<xsl:otherwise>
 								<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
 							</xsl:otherwise>
@@ -345,5 +347,36 @@ XSLTで実現するフレームワーク framexs
 			<xsl:apply-templates/>
 		</xsl:element>
 	</xsl:template>
+	<xsl:template name="is-absolute">
+		<xsl:param name="uri" />
 
+		<xsl:variable name="uri-has-scheme">
+			<xsl:call-template name="is-valid-scheme">
+				<xsl:with-param name="scheme" select="substring-before($uri, ':')" />
+			</xsl:call-template>
+		</xsl:variable>
+
+		<xsl:value-of select="starts-with($uri, '/') or ($uri-has-scheme = 'true')" />
+	</xsl:template>
+
+	<xsl:template name="is-valid-scheme">
+		<xsl:param name="scheme" />
+
+		<xsl:variable name="alpha">
+			<xsl:text>ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:text>
+			<xsl:text>abcdefghijklmnopqrstuvwxyz</xsl:text>
+		</xsl:variable>
+		<xsl:variable name="following-chars">
+			<xsl:value-of select="$alpha" />
+			<xsl:text>0123456789</xsl:text>
+			<xsl:text>+-.</xsl:text>
+		</xsl:variable>
+
+		<xsl:value-of
+			select="
+				$scheme
+				and not(translate(substring($scheme, 1, 1), $alpha, ''))
+				and not(translate(substring($scheme, 2), $following-chars, ''))"
+		 />
+	</xsl:template>
 </xsl:stylesheet>
