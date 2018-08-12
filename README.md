@@ -1,4 +1,4 @@
-XSLTフレームワーク framexs 1.3.0
+XSLTフレームワーク framexs
 ---
 ## 初めに
 
