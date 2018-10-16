@@ -363,9 +363,33 @@ XSLTで実現するフレームワーク framexs
 	</xsl:template>
 	
 	<xsl:template match="xh:*[@framexs:load]">
+		<xsl:variable name="base" select="."></xsl:variable>
 		<xsl:for-each select="$content/xh:html/xh:head/xh:*">
-			<xsl:if test="name() = @framexs:load">
-				<xsl:copy-of select="."/>
+			<xsl:if test="name() = $base/@framexs:load">
+				<xsl:element name="{$base/@framexs:load}">
+					<xsl:for-each select="@*">
+						<xsl:choose>
+							<xsl:when test="name() = 'src' or name() = 'href' or name() = 'data'">
+								<xsl:variable name="absolute">
+									<xsl:call-template name="is-absolute">
+										<xsl:with-param name="uri" select="."></xsl:with-param>
+									</xsl:call-template>
+								</xsl:variable>
+								<xsl:attribute name="{name()}">
+									<xsl:if test="not($absolute = 'true') and not(starts-with(., '#'))">
+										<xsl:value-of select="$framexs.addpath"/>
+									</xsl:if>
+									<xsl:value-of select="."/>
+								</xsl:attribute>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:if test="namespace-uri() != 'urn:framexs'">
+									<xsl:copy-of select="."/>
+								</xsl:if>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:for-each>
+				</xsl:element>
 			</xsl:if>
 		</xsl:for-each>
 	</xsl:template>
