@@ -17,7 +17,7 @@ XSLTで実現するフレームワーク framexs
 	<xsl:variable name="xhns" select="'http://www.w3.org/1999/xhtml'"/>
 	<xsl:variable name="fmxns" select="'urn:framexs'"/>
 	<xsl:variable name="empty" select="''"/>
-	<xsl:variable name="version" select="'1.5.2'"/>
+	<xsl:variable name="version" select="'1.5.3'"/>
 	
 	<xsl:template match="/">
 		<xsl:message>framexs <xsl:value-of select="$version"/></xsl:message>
@@ -119,10 +119,6 @@ XSLTで実現するフレームワーク framexs
 		</xsl:call-template>
 	</xsl:template>
 	
-    <xsl:template match="xh:*[@framexs:ifexist]">
-        <xsl:variable name="ifexist" select="@framexs:ifexist"/>
-        <xsl:apply-templates></xsl:apply-templates>
-    </xsl:template>
     <xsl:template name="for-element">
     	<xsl:param name="name"/>
     	<xsl:param name="self"/>
@@ -227,7 +223,7 @@ XSLTで実現するフレームワーク framexs
 				<xsl:value-of select="@content"/>
 			</xsl:if>
 		</xsl:for-each>
-	</xsl:template>	
+	</xsl:template>
 	
 	<!-- コンテンツにframexs.baseがあるならbaseのhrefを上書きする -->
 	<xsl:template match="xh:base[@framexs:base='on']">
@@ -249,67 +245,7 @@ XSLTで実現するフレームワーク framexs
 			<xsl:value-of select="concat($content/xh:html/xh:head/xh:title/text(),.)"/>
 		</xsl:element>
 	</xsl:template>
-	<!-- 繰り返し -->
-	<xsl:template match="@* | node()" mode="foreach">
-		<xsl:param name="item"/>
-		<xsl:copy>
-			<xsl:apply-templates select="@*" mode="foreach"/>
-			<xsl:apply-templates mode="foreach">
-				<xsl:with-param name="item" select="$item"/>
-			</xsl:apply-templates>
-		</xsl:copy>
-	</xsl:template>
-	
-	<xsl:template match="xh:*[@framexs:item]" mode="foreach">
-		<xsl:param name="item"/>
-		<xsl:apply-templates select="$item/node()" mode="content"/>
-	</xsl:template>
-	
-	<xsl:template match="xh:*" mode="foreach-search-id">
-		<xsl:param name="targetid"/>
-		<xsl:param name="target"></xsl:param>
-		<xsl:choose>
-			<xsl:when test="@id = $targetid">
-				<xsl:for-each select="xh:*">
-					<xsl:apply-templates mode="foreach" select="$target">
-						<xsl:with-param name="item" select="."/>
-					</xsl:apply-templates>
-				</xsl:for-each>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:apply-templates select="xh:*" mode="foreach-search-id">
-					<xsl:with-param name="targetid" select="$targetid"/>
-					<xsl:with-param name="target" select="$target"/>
-				</xsl:apply-templates>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	<xsl:template name="foreach_attr_id">
-		<xsl:param name="target"/>
-		<xsl:param name="id"/>
-		<xsl:apply-templates mode="foreach-search-id" select="$content/xh:html">
-			<xsl:with-param name="targetid" select="$id"/>
-			<xsl:with-param name="target" select="$target"/>
-		</xsl:apply-templates>
-		<xsl:for-each select="$content/processing-instruction('framexs.id')">
-			<xsl:variable name="name" select="substring-before(.,' ')"/>
-			<xsl:if test="$id = $name">
-				<xsl:apply-templates mode="foreach-search-id" select="document(substring-after(.,' '),$content)/xh:*">
-					<xsl:with-param name="targetid" select="$id"/>
-					<xsl:with-param name="target" select="$target"/>
-				</xsl:apply-templates>
-			</xsl:if>
-		</xsl:for-each>
-	</xsl:template>
 
-	<xsl:template match="xh:*[@framexs:foreach]">
-		<xsl:variable name="target" select="."/>
-		<xsl:variable name="id" select="@framexs:foreach"/>
-		<xsl:call-template name="foreach_attr_id">
-			<xsl:with-param name="target" select="$target"/>
-			<xsl:with-param name="id" select="$id"/>
-		</xsl:call-template>
-	</xsl:template>
 	<!-- meta要素は特別な扱いをする -->
 	<xsl:template name="metatemplate">
 		<xsl:param name="target"/>
