@@ -17,8 +17,6 @@ XMLのプロローグ部において処理命令のうち名前の先頭にframe
 |framexs.skeleton|テンプレートのパスを指定します。|
 |framexs.base   |テンプレートにbase要素がある場合、この値で上書きします。               |
 |framexs.fetch  |XMLを指定します。名前と呼び出したいXMLのパスを空白で区切ります。framexs:fetch-d属性かframexs:fetch-sd属性で呼び出します。|
-|framexs.id     |指定したXHTMLの中のその名前の値を持つid属性を持つ要素を指定します。名前と呼び出したいXHTMLのパスを空白で区切ります。framexs:id-d属性かframexs:id-sd属性で呼び出します。|
-|framexs.element|指定したXHTMLのbody要素の子の中のその名前の要素を指定します。名前と呼び出したいXHTMLのパスを空白で区切ります。framexs:element属性で呼び出します。|
 
 ## framexs属性
 テンプレートではframexsの名前空間(urn:framexs)を持つ属性によってさまざまな機能が使えます。
@@ -27,10 +25,10 @@ XMLのプロローグ部において処理命令のうち名前の先頭にframe
 
 |名前         |解説|
 |-------------|---|
-|id-d         |コンテンツXHTMLかまたはframexs.idで定義したXHTMLファイルの中でidが値と一致する要素の子孫に置き換えます。|
-|id-sd        |コンテンツXHTMLかまたはframexs.idで定義したXHTMLファイルの中でidが値と一致する要素に置き換えます。|
-|element-d    |コンテンツXHTMLかまたはframexs.elementで定義したXHTMLファイルの中で名前が値と一致するbody直下の要素の子孫に置き換えます。|
-|element-sd   |コンテンツXHTMLかまたはframexs.elementで定義したXHTMLファイルの中で名前が値と一致するbody直下の要素に置き換えます。|
+|id-d         |コンテンツXHTMLの中でidが値と一致する要素の子孫に置き換えます。|
+|id-sd        |コンテンツXHTMLの中でidが値と一致する要素に置き換えます。|
+|element-d    |コンテンツXHTMLの中で名前が値と一致するbody直下の要素の子孫に置き換えます。|
+|element-sd   |コンテンツXHTMLの中で名前が値と一致するbody直下の要素に置き換えます。|
 |fetch-d      |framexs.fetchで指定したXMLのルートの子孫に置き換えます。|
 |fetch-sd     |framexs.fetchで指定したXMLに置き換えます。|
 |title        |コンテンツのtitle要素のテキストに置き換えます。|
