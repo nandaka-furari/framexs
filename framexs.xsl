@@ -8,6 +8,7 @@ XSLTで実現するフレームワーク framexs
 
 	<!-- skeleton_locが指定されればXHTMLテンプレート処理を行う -->
 	<xsl:param name="skeleton_loc" select="/processing-instruction('framexs.skeleton')"/>
+	<xsl:param name="skeleton" select="document($skeleton_loc)"/>
 	<xsl:param name="framexs.base" select="/processing-instruction('framexs.base')"/>
 	<xsl:param name="framexs.addpath" select="concat($skeleton_loc, '/../')"/>
 
@@ -23,7 +24,7 @@ XSLTで実現するフレームワーク framexs
 		<!-- 基本的な処理分けを行う。XHTMLか一般XMLか -->
 		<xsl:choose>
 			<xsl:when test="$skeleton_loc and namespace-uri(*[1]) = $xhns">
-				<xsl:message>content</xsl:message>
+				<xsl:message>exec content</xsl:message>
 				<xsl:apply-templates select="document($skeleton_loc)/*"/>
 			</xsl:when>
 			<!-- スペルミスに対応 -->
@@ -152,7 +153,9 @@ XSLTで実現するフレームワーク framexs
 	<xsl:template match="*">
 		<xsl:copy-of select="."/>
 	</xsl:template>
-	
+	<xsl:template match="framexs:pull[@src]">
+		<xsl:copy-of select="document(@src, $skeleton)"/>
+	</xsl:template>
 	<xsl:template match="xh:*[@framexs:title]">
 		<xsl:value-of select="$content/xh:html/xh:head/xh:title"/>
 	</xsl:template>
