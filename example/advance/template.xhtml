@@ -11,9 +11,15 @@
 <body>
 <header><p framexs:id-d="header">コンテンツの#header子孫ノードに置き換えられます</p></header>
 <div style="margin:auto; width:70%">
-<h1><span framexs:title="">title要素のテキストが入ります</span></h1>
+<h1><framexs:title>title要素のテキストが入ります</framexs:title></h1>
 <main style="float:left;width:70%">
-<h2>description</h2>
+<framexs:if meta="description">
+<p>test<framexs:meta name="description"/></p>
+</framexs:if>
+<framexs:if id="abstract">
+<p><span framexs:id-d="abstract"/></p>
+</framexs:if>
+<h2>description</h2>       
 <div id="desc"><span framexs:meta-name="description">meta name=descriptionのテキスト</span></div>
 <p framexs:element-d="main">コンテンツのbody要素直下のmain要素の子孫ノードに置き換えられます</p>
 </main>
