@@ -17,7 +17,7 @@ XSLTで実現するフレームワーク framexs
 	<xsl:variable name="xhns" select="'http://www.w3.org/1999/xhtml'"/>
 	<xsl:variable name="fmxns" select="'urn:framexs'"/>
 	<xsl:variable name="empty" select="''"/>
-	<xsl:variable name="version" select="'1.7.0'"/>
+	<xsl:variable name="version" select="'1.7.1'"/>
 	
 	<xsl:template match="/">
 		<xsl:message>framexs <xsl:value-of select="$version"/></xsl:message>
@@ -147,7 +147,23 @@ XSLTで実現するフレームワーク framexs
 			</xsl:if>
 		</xsl:for-each>
 	</xsl:template>
-
+	<xsl:template match="xh:*[@framexs:meta-name]">
+		<xsl:variable name="name" select="@framexs:meta-name"/>
+		<xsl:for-each select="$content/xh:html/xh:head/xh:meta">
+			<xsl:if test="@name = $name">
+				<xsl:value-of select="@content"/>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	
+	<xsl:template match="xh:*[@framexs:meta-property]">
+		<xsl:variable name="property" select="@framexs:meta-property"/>
+		<xsl:for-each select="$content/xh:html/xh:head/xh:meta">
+			<xsl:if test="@property = $property">
+				<xsl:value-of select="@content"/>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
 	<!--  -->
 	
 	<xsl:template match="*">
@@ -187,8 +203,21 @@ XSLTで実現するフレームワーク framexs
 			</xsl:element>        
 		</xsl:for-each>
 	</xsl:template>
-	<xsl:template match="framexs:meta">
-		
+	<xsl:template match="framexs:meta[@name]">
+		<xsl:variable name="name" select="@name"/>
+		<xsl:for-each select="$content/xh:html/xh:head/xh:meta">
+			<xsl:if test="@name = $name">
+				<xsl:value-of select="@content"/>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	<xsl:template match="framexs:meta[@property]">
+		<xsl:variable name="property" select="@property"/>
+		<xsl:for-each select="$content/xh:html/xh:head/xh:meta">
+			<xsl:if test="@property = $property">
+				<xsl:value-of select="@content"/>
+			</xsl:if>
+		</xsl:for-each>
 	</xsl:template>
 	<xsl:template match="framexs:if[@meta]">
 		<xsl:variable name="meta" select="@meta"></xsl:variable>
