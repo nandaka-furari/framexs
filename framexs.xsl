@@ -17,7 +17,7 @@ XSLTで実現するフレームワーク framexs
 	<xsl:variable name="xhns" select="'http://www.w3.org/1999/xhtml'"/>
 	<xsl:variable name="fmxns" select="'urn:framexs'"/>
 	<xsl:variable name="empty" select="''"/>
-	<xsl:variable name="version" select="'1.7.1'"/>
+	<xsl:variable name="version" select="'1.7.2'"/>
 	
 	<xsl:template match="/">
 		<xsl:message>framexs <xsl:value-of select="$version"/></xsl:message>
@@ -118,7 +118,7 @@ XSLTで実現するフレームワーク framexs
     	</xsl:for-each>
     </xsl:template>
 
-    <xsl:template match="xh:*[@framexs:element-sd]">              
+    <xsl:template match="xh:*[@framexs:element-sd]">
     	<xsl:call-template name="search-element">
     		<xsl:with-param name="name" select="@framexs:element-sd"/>
 			<xsl:with-param name="self" select="true()"/>
@@ -163,6 +163,11 @@ XSLTで実現するフレームワーク framexs
 				<xsl:value-of select="@content"/>
 			</xsl:if>
 		</xsl:for-each>
+	</xsl:template>
+
+	<xsl:template match="xh:*[@framexs:concat and @framexs:attr]">
+		<xsl:variable name="attribute" select="@framexs:attr"/>
+		<xsl:variable name="target" select="@framexs:concat"/>
 	</xsl:template>
 	<!--  -->
 	
@@ -219,15 +224,25 @@ XSLTで実現するフレームワーク framexs
 			</xsl:if>
 		</xsl:for-each>
 	</xsl:template>
-	<xsl:template match="framexs:if[@meta]">
-		<xsl:variable name="meta" select="@meta"></xsl:variable>
+	<xsl:template match="framexs:if[@meta-name]">
+		<xsl:variable name="name" select="@meta-name"></xsl:variable>
 		<xsl:variable name="current" select="."></xsl:variable>
 		<xsl:for-each select="$content/xh:html/xh:head/xh:meta">
-			<xsl:if test="$meta = @name">
+			<xsl:if test="$name = @name">
 				<xsl:apply-templates select="$current/*"/>
 			</xsl:if>
 		</xsl:for-each>
 	</xsl:template>
+	<xsl:template match="framexs:if[@meta-property]">
+		<xsl:variable name="property" select="@meta-property"></xsl:variable>
+		<xsl:variable name="current" select="."></xsl:variable>
+		<xsl:for-each select="$content/xh:html/xh:head/xh:meta">
+			<xsl:if test="$property = @property">
+				<xsl:apply-templates select="$current/*"/>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
+	
 	<xsl:template match="xh:*" mode="id-exists">
 		<xsl:param name="id"/>
 		<xsl:choose>
@@ -253,10 +268,23 @@ XSLTで実現するフレームワーク framexs
 			</xsl:call-template>
 		</xsl:variable>
 		<xsl:if test="$exists = 'true'">
-			<xsl:apply-templates/>                              
+			<xsl:apply-templates/>
 		</xsl:if>
 	</xsl:template>
-	
+	<!--
+	<xsl:template match="framexs:array[@id]">
+		<xsl:variable name="id" select="@id"></xsl:variable>
+		<xsl:variable name="exists">
+			<xsl:call-template name="is-exists">
+				<xsl:with-param name="id" select="$id"/>
+			</xsl:call-template>
+		</xsl:variable>
+		<xsl:if test="$exists = 'true'">
+			<xsl:apply-templates/>
+		</xsl:if>
+	</xsl:template>-->
+	<xsl:template match="framexs:*"></xsl:template>
+
 	<xsl:template match="xh:*[@framexs:title]">
 		<xsl:value-of select="$content/xh:html/xh:head/xh:title"/>
 	</xsl:template>
@@ -296,7 +324,7 @@ XSLTで実現するフレームワーク framexs
 	<xsl:template match="xh:title">
 		<xsl:element name="title">
 			<xsl:value-of select="concat($content/xh:html/xh:head/xh:title/text(),.)"/>
-		</xsl:element>                                       
+		</xsl:element>
 	</xsl:template>
 
 
@@ -378,7 +406,7 @@ XSLTで実現するフレームワーク framexs
 		</xsl:for-each>
 	</xsl:template>
 
-	<xsl:template match="xh:*">            
+	<xsl:template match="xh:*">
 		<xsl:element name="{name()}">
 			<xsl:call-template name="replacepath">
 				<xsl:with-param name="current" select="."/>
