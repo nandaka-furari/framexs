@@ -181,13 +181,20 @@ XSLTで実現するフレームワーク framexs
 	<xsl:template match="framexs:title">
 		<xsl:value-of select="$content/xh:html/xh:head/xh:title"/>
 	</xsl:template>
-	<xsl:template match="framexs:script">
+	<xsl:template match="framexs:script@src">
 		<xsl:for-each select="$content/xh:html/xh:head/xh:script">
-			<xsl:element name="script">
-				<xsl:call-template name="replacepath">
-					<xsl:with-param name="current" select="."/>
-				</xsl:call-template>
-			</xsl:element>        
+			<xsl:choose>
+				<xsl:when test="@src">
+					<xsl:element name="script">
+						<xsl:call-template name="replacepath">
+							<xsl:with-param name="current" select="."/>
+						</xsl:call-template>
+					</xsl:element>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:copy-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</xsl:for-each>
 	</xsl:template>
 	<xsl:template match="framexs:style">
@@ -196,16 +203,16 @@ XSLTで実現するフレームワーク framexs
 				<xsl:call-template name="replacepath">
 					<xsl:with-param name="current" select="."/>
 				</xsl:call-template>
-			</xsl:element>        
+			</xsl:element>
 		</xsl:for-each>
 	</xsl:template>
 	<xsl:template match="framexs:link">
 		<xsl:for-each select="$content/xh:html/xh:head/xh:link">
-			<xsl:element name="style">
+			<xsl:element name="link">
 				<xsl:call-template name="replacepath">
 					<xsl:with-param name="current" select="."/>
 				</xsl:call-template>
-			</xsl:element>        
+			</xsl:element>
 		</xsl:for-each>
 	</xsl:template>
 	<xsl:template match="framexs:meta[@name]">
