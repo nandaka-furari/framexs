@@ -27,17 +27,16 @@ XMLのプロローグ部において処理命令のうち名前の先頭にframe
 ## framexs要素
 |名前         |解説|
 |-------------|---|
-|pull         |srcで指定したXMLを貼り付けます。貼り付け元はフラグメントである必要があります。|
+|fetch        |srcで指定したXMLを貼り付けます。貼り付け元はXMLである必要があります。selfで自分自身を含むか指定します。|
 |title        |コンテンツのtitle要素のテキストに置き換えます。|
-|script       ||
-|style        ||
+|script       |コンテンツのhead要素下にあるscript要素をすべて呼び出します|
+|style        |コンテンツのhead要素下にあるscript要素をすべて呼び出します|
+|link         |コンテンツのhead要素下にあるscript要素をすべて呼び出します|
 ## framexs属性
 |名前         |解説|                   
 |-------------|---|
 |id-d         |コンテンツXHTMLの中でidが値と一致する要素の子孫に置き換えます。|
 |id-sd        |コンテンツXHTMLの中でidが値と一致する要素に置き換えます。|
-|element-d    |コンテンツXHTMLの中で名前が値と一致するbody直下の要素の子孫に置き換えます。|
-|element-sd   |コンテンツXHTMLの中で名前が値と一致するbody直下の要素に置き換えます。|
 |fetch-d      |framexs.fetchで指定したXMLのルートの子孫に置き換えます。|
 |fetch-sd     |framexs.fetchで指定したXMLに置き換えます。|
 |title        |コンテンツのtitle要素のテキストに置き換えます。|
