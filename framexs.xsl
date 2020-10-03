@@ -181,7 +181,7 @@ XSLTで実現するフレームワーク framexs
 	<xsl:template match="framexs:title">
 		<xsl:value-of select="$content/xh:html/xh:head/xh:title"/>
 	</xsl:template>
-	<xsl:template match="framexs:script@src">
+	<xsl:template match="framexs:script[@src]">
 		<xsl:for-each select="$content/xh:html/xh:head/xh:script">
 			<xsl:choose>
 				<xsl:when test="@src">
