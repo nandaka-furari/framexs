@@ -8,7 +8,6 @@ XSLTで実現するフレームワーク framexs
 
 	<!-- skeleton_locが指定されればXHTMLテンプレート処理を行う -->
 	<xsl:param name="skeleton_loc" select="/processing-instruction('framexs.skeleton')"/>
-	<xsl:param name="skeleton" select="document($skeleton_loc)"/>
 	<xsl:param name="framexs.base" select="/processing-instruction('framexs.base')"/>
 	<xsl:param name="framexs.addpath" select="concat($skeleton_loc, '/../')"/>
 
@@ -17,7 +16,7 @@ XSLTで実現するフレームワーク framexs
 	<xsl:variable name="xhns" select="'http://www.w3.org/1999/xhtml'"/>
 	<xsl:variable name="fmxns" select="'urn:framexs'"/>
 	<xsl:variable name="empty" select="''"/>
-	<xsl:variable name="version" select="'1.7.2'"/>
+	<xsl:variable name="version" select="'1.8.0'"/>
 	
 	<xsl:template match="/">
 		<xsl:message>framexs <xsl:value-of select="$version"/></xsl:message>
@@ -118,19 +117,6 @@ XSLTで実現するフレームワーク framexs
     	</xsl:for-each>
     </xsl:template>
 
-    <xsl:template match="xh:*[@framexs:element-sd]">
-    	<xsl:call-template name="search-element">
-    		<xsl:with-param name="name" select="@framexs:element-sd"/>
-			<xsl:with-param name="self" select="true()"/>
-    	</xsl:call-template>
-	</xsl:template>
-	<xsl:template match="xh:*[@framexs:element-d]">
-		<xsl:call-template name="search-element">
-			<xsl:with-param name="name" select="@framexs:element-d"/>
-			<xsl:with-param name="self" select="false()"/>
-		</xsl:call-template>
-	</xsl:template>
-
 	<xsl:template match="xh:*[@framexs:fetch-sd]">
 		<xsl:variable name="name" select="@framexs:fetch-sd"/>
 		<xsl:for-each select="$content/processing-instruction('framexs.fetch')">
@@ -175,8 +161,20 @@ XSLTで実現するフレームワーク framexs
 		<xsl:copy-of select="."/>
 	</xsl:template>
 	<!--framexs要素-->
-	<xsl:template match="framexs:pull[@src]">
-		<xsl:copy-of select="document(@src, $skeleton)"/>
+	<xsl:template match="framexs:fetch[@src]">
+		<xsl:variable name="name" select="@src"/>
+		<xsl:for-each select="$content/processing-instruction('framexs.fetch')">
+			<xsl:if test="$name = substring-before(.,' ')">
+				<xsl:choose>
+					<xsl:when test="@framexs:self">
+						<xsl:apply-templates mode="content" select="document(substring-after(.,' '), $content)/*"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates mode="content" select="document(substring-after(.,' '), $content)/*[1]/*"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:if>
+		</xsl:for-each>
 	</xsl:template>
 	<xsl:template match="framexs:title">
 		<xsl:value-of select="$content/xh:html/xh:head/xh:title"/>
