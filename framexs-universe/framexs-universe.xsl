@@ -14,7 +14,7 @@ XSLTで実現するフレームワーク framexs
 	<xsl:variable name="xhns" select="'http://www.w3.org/1999/xhtml'"/>
 	<xsl:variable name="fmxns" select="'urn:framexs'"/>
 	<xsl:variable name="empty" select="''"/>
-	<xsl:variable name="version" select="'0.1'"/>
+	<xsl:variable name="version" select="'0.1.1'"/>
 	
 	<xsl:template match="/">
 		<xsl:choose>
@@ -51,13 +51,22 @@ XSLTで実現するフレームワーク framexs
 		<xsl:param name="content_current"></xsl:param>
 		<xsl:variable name="name" select="@name"></xsl:variable>
 		<xsl:variable name="skeleton_current" select="."></xsl:variable>
-		<xsl:for-each select="$content_current/node()[local-name() = $name]">
+		<xsl:for-each select="$content_current/*[local-name() = $name]">
 			<xsl:apply-templates select="$skeleton_current/node()">
 				<xsl:with-param name="content_current" select="."></xsl:with-param>
 			</xsl:apply-templates>
 		</xsl:for-each>
 	</xsl:template>
-	
+	<xsl:template match="framexs:for-all-element">
+		<xsl:param name="content_current"></xsl:param>
+		<xsl:variable name="name" select="@name"></xsl:variable>
+		<xsl:variable name="skeleton_current" select="."></xsl:variable>
+		<xsl:for-each select="$content_current/*">
+			<xsl:apply-templates select="$skeleton_current/node()">
+				<xsl:with-param name="content_current" select="."></xsl:with-param>
+			</xsl:apply-templates>
+		</xsl:for-each>
+	</xsl:template>
 	<xsl:template match="framexs:for-id">    
 		<xsl:variable name="id" select="@id"></xsl:variable>
 	</xsl:template>
@@ -66,10 +75,16 @@ XSLTで実現するフレームワーク framexs
 		<xsl:param name="content_current"></xsl:param>
 		<xsl:value-of select="$content_current/text()"></xsl:value-of>
 	</xsl:template>
-	<xsl:template match="framexs:attribute[@name]">
+	<xsl:template match="framexs:value[@name]">
 		<xsl:param name="content_current"/>
 		<xsl:variable name="name" select="@name"></xsl:variable>
 		<xsl:value-of select="$content_current/@*[name() = $name]"></xsl:value-of>
+	</xsl:template>
+	<xsl:template match="framexs:name">
+		<xsl:value-of select="local-name()"></xsl:value-of>
+	</xsl:template>
+	<xsl:template match="framexs:apply">
+		apply
 	</xsl:template>
 	<xsl:template match="framexs:*">
 		test

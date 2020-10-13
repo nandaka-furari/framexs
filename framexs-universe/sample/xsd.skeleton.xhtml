@@ -30,15 +30,15 @@
 		<framexs:root>
 			target namespace:<framexs:attribute name="targetNamespace"/><br/>
 			elementFormDefault:<framexs:attribute name="elementFormDefault"/>
-			<h2>group</h2>
+			<h2>element</h2>
 			<div>
 				<framexs:for-element name="element">
-					<h3></h3>
+					<h3><framexs:value name="name"/></h3>
 					<framexs:for-element name="annotation">
 						<div class="annotation">
 						<framexs:for-element name="documentation">
 							<div class="documentation">
-								<p><framexs:attribute name="source"/>:<framexs:text/></p>
+								<p><framexs:value name="source"/>:<framexs:text/></p>
 							</div>
 						</framexs:for-element>
 						</div>
@@ -48,7 +48,10 @@
 			<h2>complextype</h2>
 			<div>
 				<framexs:for-element name="complexType">
-					<div>name:<framexs:attribute name="name"/></div>
+					<div>name:<framexs:value name="name"/></div>
+					<framexs:apply>
+						
+					</framexs:apply>
 				</framexs:for-element>
 			</div>
 		</framexs:root>

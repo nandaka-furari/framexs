@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <framexs:rules xmlns:framexs="urn:framexs">
-	<framexs:rule>
-	
+	<framexs:rule target="all" start="(" end=")">
+		<framexs:apply/>
 	</framexs:rule>
+	<framexs:rule target="choice" start="[" end="]"></framexs:rule>
 </framexs:rules>
