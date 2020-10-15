@@ -10,6 +10,7 @@ XSLTで実現するフレームワーク framexs
 	<xsl:param name="skeleton_loc" select="/processing-instruction('framexs.skeleton')"/>
 	<xsl:param name="properties_loc" select="/processing-instruction('framexs.properties')"/>
 	
+	<xsl:variable name="root" select="/"></xsl:variable>
 	<xsl:variable name="content" select="/*[1]"></xsl:variable>
 	<xsl:variable name="xhns" select="'http://www.w3.org/1999/xhtml'"/>
 	<xsl:variable name="fmxns" select="'urn:framexs'"/>
@@ -83,11 +84,19 @@ XSLTで実現するフレームワーク framexs
 	<xsl:template match="framexs:name">
 		<xsl:value-of select="local-name()"></xsl:value-of>
 	</xsl:template>
-	<xsl:template match="framexs:apply">
-		apply
-	</xsl:template>
 	<xsl:template match="framexs:*">
 		test
+	</xsl:template>
+	<xsl:template match="framexs:title">
+		<xsl:value-of select="$root/processing-instruction('framexs.title')"/>
+	</xsl:template>
+	<xsl:template match="framexs:namespace">
+		<xsl:value-of select="namespace-uri($content)"></xsl:value-of>
+	</xsl:template>
+	<xsl:template match="framexs:apply[@src]">
+		<xsl:apply-templates select="document(@src)/*[1]/*">
+			<xsl:with-param name="content_current" select="$content"></xsl:with-param>
+		</xsl:apply-templates>
 	</xsl:template>
 	<!-- パスの解決アルゴリズム -->
 	<xsl:template name="replacepath">

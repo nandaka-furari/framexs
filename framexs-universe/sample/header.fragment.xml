@@ -1,0 +1,48 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:framexs="urn:framexs">
+	<!-- Google Tag Manager (noscript) -->
+	<noscript>
+	<framexs:element name="iframe">
+		<framexs:attribute-set height="0" width="0" style="display:none;visibility:hidden"/>
+		<framexs:attribute name="src">https://www.googletagmanager.com/ns.html?id=<framexs:property name="gtmid"/></framexs:attribute>
+	</framexs:element>
+	<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K337ZX4"
+	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<!-- End Google Tag Manager (noscript) -->
+	<header class="navbar">
+		<div class="navbar-brand">
+			<a class="navbar-item" href="https://nandaka-furari.github.io">
+			  <img src="/image/favicon.png" width="32" height="32"/>
+			</a>
+			<a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+				<span aria-hidden="true"></span>
+				<span aria-hidden="true"></span>
+				<span aria-hidden="true"></span>
+			</a>
+		</div>
+		<nav class="navbar-menu" id="navMenu">
+			<ul class="navbar-start">
+				<li class="navbar-item"><a class="navbar-item" href="../index.html">サイトのトップページ</a></li>
+				<li class="navbar-item has-dropdown is-hoverable">
+					<a class="navbar-link">POM</a>
+					<div class="navbar-dropdown">
+						<a class="navbar-item" href="jersey.core-client.pom.xml">Jersey Client</a>
+						<a class="navbar-item" href="jersey.pom.xml">Jersey</a>
+					</div>
+				</li>
+				<li class="navbar-item has-dropdown is-hoverable">
+					<a class="navbar-link">XML Schema</a>
+					<div class="navbar-dropdown">
+						<a class="navbar-item" href="maven-4.0.0.xsd">Maven4 POM</a>
+					</div>
+				</li>
+			</ul>
+		</nav>
+	</header>
+	<header class="hero is-dark">
+		<div class="hero-body">
+			<div class="container">
+				<h1 class="title"><framexs:title/> on ナンダカフラリのサイト</h1>
+			</div>
+		</div>
+	</header>
+</html>
