@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="application/xml" href="../framexs-svg.xsl"?>
+<?framexs.skeleton wakewakaran.skeleton.svg?>
+<svg xmlns="http://www.w3.org/2000/svg"  width="240" height="270">
+<text id="ワケ">ワケ</text>
+<text id="ワカ">ワカ</text>
+<text id="ラン">ラン</text>
+</svg>
