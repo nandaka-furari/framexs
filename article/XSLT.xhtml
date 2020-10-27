@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="application/xml" href="../framexs.xsl"?>
+<?framexs.skeleton qitaa.skeleton.xhtml?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>XSLTはフロントエンド技術の完成の最後にして最大のピースになる</title>
+</head>
+<body>                                                   
+<article id="main">
+<p>XSLTはXML（XSLT3.0の現在ではJSONも含む）の変換を記述する技術だ。
+だが、この技術は1999年の登場から3.0まで進化したが現状ではあまり注目されていない。
+しかし、私はこの技術がフロントエンドの最後の主要技術になり、これをもってフロントエンドの技術が完成すると考えている。この記事ではその理由について書く。</p>
+<h2>フロントエンド</h2>
+<p>まずはフロントエンドの話をしよう。
+HTML、CSS、JavaScriptがありそれぞれ変化を遂げてきた。特にCSS、JavaScriptでは画期的なフレームワークの登場が開発の進歩をもたらした。</p>
+<div>            
+html:フレームワークの使用
+<pre><![CDATA[
+<html>
+<head>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<link rel="stylesheet" href="https://www.jsdelivr.com/package/npm/bulma">
+(somecode)
+</head>
+<body>(somecode)</body>
+</html>]]></pre>
+</div>
+<p>これらのコードは現在ではあまりに見慣れたものだろう。</p>
+<h2>ブラウザの挙動</h2>
+<p>その前にブラウザの挙動をまとめてみよう。現在のよく知られた技術なら大まかにこうなる。</p>
+<ol>
+<li>指定されたURLのサーバからファイルをダウンロード</li>
+<li>ダウンロードしたものがHTMLならエンジンで解析</li>
+<li>CSSやJavaScriptのダウンロード</li>
+<li>レンダリング</li>
+<li>JavaScriptの実行など</li>
+</ol>
+<h2>XSLT</h2>
+<p>そして、これ以外にもあまり知られていないフロントエンドの技術がある。それがXSLTの適用テクニックである。
+XSLTはXMLにとある記述をすることで、それがブラウザから読み込まれた時に変換を行うようXSLTプロセッサに指令を出せる。</p>
+<div>
+xml:XSLTの呼出し
+<pre><![CDATA[
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="application/xml" href="framexs.xsl"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+(somecode)
+</html>]]></pre>
+</div>
+<p>この記述によってブラウザはXMLをそのままパースするのではなく`framexs.xsl`によって変換された後の出力結果を内部で受け取り、それがHTMLであった場合などは必要に応じてパースやレンダリングをするようになる。
+その流れを整理しよう。</p>
+<ol>
+<li>指定されたURLのサーバからファイルをダウンロード</li>
+<li>ダウンロードしたものがXMLならエンジンで解析</li>
+<li>XSLTを行うよう命令されていたならばXSLをダウンロード</li>
+<li>XSLT処理を行う</li>
+<li>出力先のタイプがHTMLだとしたらHTMLとして解析</li>
+<li>CSSやJavaScriptのダウンロード</li>
+<li>レンダリング</li>
+<li>JavaScriptの実行など</li>
+</ol>
+<h2>framexs</h2>
+<p>この仕組みを利用して構成を記述したXHTMLとモデルとなるXHTMLを合成してHTMLを出力するフレームワークがある。
+それが私が開発した[framexs](https://github.com/nandaka-furari/framexs)だ。
+このフレームワークはまるでMVCアーキテクチャのようにHTMLを生成する。
+詳しくは[HTML5はXHTMLで楽に書ける？XSLTによるMVCライクなフレームワーク framexs を開発したので解説するよ](https://qiita.com/nandaka_furari/items/80528c0882479c059f96)で書いているので参照されたい。</p>
+
+#終わりに
+現在のフロントエンドは開発が急速に進むとともに混迷の度合いを深めている。そして、XSLTは今までフロントエンドの技術としてほとんど注目を浴びることはなかった。
+しかし、framexsの登場と開発によってそれも変わっていくと私は期待している。
+</article>
+</body>
+</html>

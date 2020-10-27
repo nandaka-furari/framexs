@@ -7,20 +7,64 @@
 <meta name="keywords" content=",XSLT"/>
 <meta property="dc:creator" content=""/>
 <meta property="dc:description" content="&#x20;using template."/>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+<script>
+//<![CDATA[
+window.addEventListener('load', (event) => {
+	const header = new Vue({
+		el:"#navi",
+		data: {
+			ha: [false,false,false]
+		},
+		methods: {
+			toggle: function(ha) {
+				this[ha] = !this[ha];
+			}
+		}
+	})
+});
+//]]>
+</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.css"/>
 </head>
 <body>
-<header><p framexs:id-d="header">コンテンツの#header子孫ノードに置き換えられます</p></header>
+<header>
+<div class="navbar-menu" id="navMenu" v-bind:class="{'is-active': ha[0]}">
+	<div class="navbar-brand">
+		<a class="navbar-item" href="#"></a>
+		<a role="button" class="navbar-burger burber" data-target="navMenu" aria-label="menu" aria-expanded="false" v-on:click="toggle('ha0')">
+			<span aria-hidden="true"></span>
+			<span aria-hidden="true"></span>
+			<span aria-hidden="true"></span>
+		</a>
+	</div>
+	<div class="navbar-start">
+		<a class="navbar-item" href="/index.html">サイトのトップページ</a>
+		<div class="navbar-item has-dropdown" v-bind:class="{'is-active':ha[1]}">
+			<button class="navbar-link" aria-haspopup="true" aria-controls="dropdown-menu" v-on:click="toggle('ha[1]')">
+				<span>ドキュメント</span>
+			</button>
+			<div class="navbar-dropdown" v-bind:class="{'is-hidden-touch':!ha1}">
+				<a class="navbar-item" href="/framexs/example/バズ作戦.xhtml">content1</a>
+				<a class="navbar-item" href="/framexs/example/aboutme.xhtml">content2</a>
+			</div>
+		</div>
+	</div>
+</div>
+</header>
 <div style="margin:auto; width:70%">
 <h1><framexs:title>title要素のテキストが入ります</framexs:title></h1>
 <main style="float:left;width:70%">
-<framexs:if meta="description">
-<p>test<framexs:meta name="description"/></p>
-</framexs:if>
 <framexs:if id="abstract">
 <p><span framexs:id-d="abstract"/></p>
 </framexs:if>
-<h2>description</h2>       
-<div id="desc"><span framexs:meta-name="description">meta name=descriptionのテキスト</span></div>
+<h2>description</h2>
+<div id="desc">
+<span framexs:meta-name="description">meta name=descriptionのテキスト</span>
+<framexs:if meta="description">
+<p><framexs:meta name="description"/></p>
+</framexs:if>
+</div>
 <p framexs:element-d="main">コンテンツのbody要素直下のmain要素の子孫ノードに置き換えられます</p>
 </main>
 <aside style="float:left;width:25%">
@@ -29,7 +73,6 @@
 <tbody><tr framexs:fetch-d="fragment"><td>名前</td></tr></tbody>
 </table>
 
-<p framexs:element-d="aside">コンテンツのbody要素直下のaside要素の子孫ノードに置き換えられます</p>
 </aside>
 </div>
 <footer style="clear:both"><p framexs:element-d="footer">コンテンツのbody要素直下のfooter要素に置き換えられます</p></footer>

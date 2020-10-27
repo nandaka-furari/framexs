@@ -1,6 +1,7 @@
 node_modules/
-labo/electron/node_modules/
 .dest/
+test.xsl
+test/
 .settings/
 .project
 

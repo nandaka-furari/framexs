@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="application/xml" href="../framexs.xsl"?>
+<?framexs.skeleton qitaa.skeleton.xhtml?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>XSLTはフロントエンド技術の完成の最後にして最大のピースになる</title>
+</head>
+<body>                                                   
+<article id="main">
+<h2>対象読者</h2>
+<p>その前にいくつかの注意点があります。<br/>
+この記事を理解するにあたってSVGを知っておくのは当然として、XMLの仕様についてもある程度知っておく必要があります。</p>
+<p><a href="framexs.xhtml">framexsの記事を読む前に</a></p>
+<h2>使い方</h2>
+<p>では、具体的に何に何をするのかを実際のコードを例にしながら解説します。例となるファイルは/example以下のディレクトリにあります。<br/>
+ハローワールド /example/helloworld
+
+名前がtemplate.xhtmlのテンプレートとして使うXHTMLファイルと、名前がcontent.xhtmlのコンテンツデータとして使うXHTMLファイルがあり、また、リポジトリのトップに名前がframexs.xslのframexsフレームワークとしての処理を記述したXSLファイルがあります。
+XHTMLについて実際のコード見ていきます。まずはコンテンツデータを見てみましょう。</p>
+<div class="blockcode">
+wakewakaran.svg
+<pre><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="application/xml" href="../framexs-svg.xsl"?>
+<?framexs.skeleton wakewakaran-animation.skeleton.svg?>
+<svg xmlns="http://www.w3.org/2000/svg"  width="70" height="70">
+<text id="ワケ">ワケ</text>
+<text id="ワカ">ワカ</text>
+<text id="ラン">ラン</text>
+</svg>
+]]></pre>
+</div>
+<p>基本的にはSVG1.2ですが普通とは違うところもあります。</p>
+<pre><![CDATA[<?xml-stylesheet type="application/xml" href="../framexs-svg.xsl"?>]]></pre>
+<p>この部分はProcessing Instruction（処理命令）です。コードの意味はこの記述があるXMLにスタイルシートを設定するというものです。XHTMLもXMLなのでlink要素の代わりにこの記述方法でスタイルシートを指定することもできます。この指定方法ではスタイルシートの種類にはCSSとXSLのどちらかを指定できます。またこの場合はXMLプロローグにコードを記述しておく必要があります。
+ここではframexsのXSLファイルをスタイルシートとして指定しています。
+そのために、このファイルをウェブサーバーを通してブラウザで読み込むと、そのままパースしてレンダリングを行うのではなく、その前にまずXSLT処理を行おうとします。
+XMLの仕様のうちの一つである処理命令に関してはframexsを使う上である程度知っておく必要があります。</p>
+<pre><![CDATA[<?framexs.skeleton wakewakaran-animation.skeleton.svg?>]]></pre>
+<p>この処理命令はframexsが解釈する記述がされています。このframexs.skeletonという記述はテンプレートXHTMLを使うという宣言であり、そのためのファイルの場所としてtemplate.xhtmlを指定しています。framexsはXSLT処理時にこのファイルをXSLTプロセッサーにロードさせます。このコードのようにプロローグ部の処理命令で先頭にframexs.がついたものをframexsコマンドと呼びます。</p>
+
+次にテンプレートを見ていきます。
+<div>
+template.xhtml
+<pre><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:framexs="urn:framexs" width="70" height="70">
+<defs>
+<g font-family="sans-serif" font-size="10" id="t1">
+<text x="15" y="10">∧＿∧</text>
+<text x="5" y="20">（　・∀・）</text>
+<text x="8" y="30">⊂　⊂　 ）</text>
+<text x="10" y="40">&lt;　&lt;　&lt;</text>
+<text x="10" y="50">（＿（＿）</text></g>
+<g font-family="sans-serif" font-size="10" id="t2">
+<text x="20" y="10">∧＿∧</text>
+<text x="10" y="20">（　・∀・）</text>
+<text x="8" y="30">（　Ｕ　　つ</text>
+<text x="15" y="40">）　）　）</text>
+<text x="10" y="50">（_＿）＿）</text></g>
+<g font-family="sans-serif" font-size="10" id="t3">
+<text x="20" y="10">∧＿∧</text>
+<text x="10" y="20">（　・∀・）</text>
+<text x="12" y="30">⊂__へ　つ</text>
+<text x="24" y="40">（＿）|</text>
+<text x="18" y="50">彡（_＿）</text></g>
+<g font-falmily="Hiragino Kaku Gothic ProN" font-size="20" id="text">
+<text id="ワケ" x="0" y="0"><framexs:id target="ワケ"/></text>
+<text id="ワカ" x="0" y="0"><framexs:id target="ワカ"/></text>
+<text id="ラン" x="0" y="0"><framexs:id target="ラン"/></text>
+</g>
+</defs>
+<use x="0" y="20">
+	<animate attributeName="xlink:href" begin="0s" dur="2s" repeatCount="indefinite" values="#t1;#t2;#t3"/>
+</use>
+<use x="20" y="20" xlink:href="#text">
+	<animate attributeName="xlink:href" begin="0s" dur="2s" repeatCount="indefinite" values="#ワケ;#ワカ;#ラン"/>
+</use>
+</svg>]]></pre>
+</div>
+テンプレートは基本的には普通のSVGですが、ルート要素でurn:framexsという名前空間が宣言されており、その名前空間のframexs:id要素が使われています。この指定はこの部分でコンテンツ値がmainのidを持つ要素の子孫ノードと置き換えることを指示しています。
+framexsではこのようにframexsの名前空間を持つ属性でテンプレートに機能を持たせます。注意点としてテンプレートには一般的に使われているDTDやXML Schemaのようなスキーマを持たせるべきではないということです。framexs属性は一般的なスキーマを持ったXHTMLとしては不正です。もし検証を行う機能を持ったパーサーであればエラーになるでしょう。
+
+そして、これらを組み合わせ変換を行わせるのがframexsです。
+そして変換結果はおおよそ次のようになります。処理系によって若干違う可能性があり正確にこうならないかもしれません。jEditでは空行や空白などが生成されましたがここでは見やすさのためにそれらを適宜に削除しています。
+result
+<pre><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:framexs="urn:framexs" width="70" height="70">
+<defs>
+<g font-family="sans-serif" font-size="10" id="ワケp">
+<text x="15" y="10">∧＿∧</text>
+<text x="5" y="20">（　・∀・）</text>
+<text x="8" y="30">⊂　⊂　 ）</text>
+<text x="10" y="40">&lt;　&lt;　&lt;</text>
+<text x="10" y="50">（＿（＿）</text></g>
+<g font-family="sans-serif" font-size="10" id="ワカp">
+<text x="20" y="10">∧＿∧</text>
+<text x="10" y="20">（　・∀・）</text>
+<text x="8" y="30">（　Ｕ　　つ</text>
+<text x="15" y="40">）　）　）</text>
+<text x="10" y="50">（_＿）＿）</text></g>
+<g font-family="sans-serif" font-size="10" id="ランp">
+<text x="20" y="10">∧＿∧</text>
+<text x="10" y="20">（　・∀・）</text>
+<text x="12" y="30">⊂__へ　つ</text>
+<text x="24" y="40">（＿）|</text>
+<text x="18" y="50">彡（_＿）</text></g>
+<g font-falmily="Hiragino Kaku Gothic ProN" font-size="20" id="text">
+<text id="ワケ" x="0" y="0"/>
+<text id="ワカ" x="0" y="0"/>
+<text id="ラン" x="0" y="0"/>
+</g>
+</defs>
+<use x="0" y="20">
+	<animate attributeName="xlink:href" begin="0s" dur="2s" repeatCount="indefinite" values="#ワケp;#ワカp;#ランp"/>
+</use>
+<use x="20" y="20" xlink:href="#text">
+	<animate attributeName="xlink:href" begin="0s" dur="2s" repeatCount="indefinite" values="#ワケt;#ワカt;#ランt"/>
+</use>
+</svg>]]></pre>
+</article>
+</body>
+</html>

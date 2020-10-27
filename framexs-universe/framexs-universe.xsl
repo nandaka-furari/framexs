@@ -19,14 +19,22 @@ XSLTで実現するフレームワーク framexs
 	
 	<xsl:template match="/">
 		<xsl:choose>
-			<xsl:when test="$skeleton_loc">
+			<xsl:when test="$skeleton_loc and not(/framexs:wrapper)">
 				<xsl:variable name="skeleton" select="document($skeleton_loc)"></xsl:variable>
 				<xsl:variable name="target_namespace" select="$skeleton/processing-instruction('target')"></xsl:variable>
 				<xsl:apply-templates select="$skeleton/*[1]">
 					<xsl:with-param name="content_current" select="/*[1]"></xsl:with-param>
-				</xsl:apply-templates>                                       
+				</xsl:apply-templates>
+				
 			</xsl:when>
-			<xsl:otherwise></xsl:otherwise>
+			<xsl:when test="$skeleton_loc and /framexs:wrapper">
+				<xsl:variable name="skeleton" select="document($skeleton_loc)"></xsl:variable>
+				<xsl:apply-templates select="$skeleton/*[1]">
+					<xsl:with-param name="content_current" select="/framexs:wrapper/*[1]"></xsl:with-param>
+				</xsl:apply-templates>
+			</xsl:when>
+			<xsl:otherwise>
+			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 
